@@ -11,7 +11,7 @@ const router = Router();
 /**
  * Razorpay webhook.
  *
- * MUST receive the raw request body.
+ * MUST receive raw request body.
  */
 router.post(
   "/webhook",

@@ -16,7 +16,7 @@ export async function createPaymentLinkController(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const bookingId = String(req.params.bookingId);
+    const bookingId = String(req.params.bookingId || "").trim();
 
     if (!bookingId) {
       res.status(400).json({
@@ -33,7 +33,57 @@ export async function createPaymentLinkController(
       success: true,
       data,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Create payment link failed:", error);
+
+    /**
+     * Razorpay Test Mode has a Payment Link
+     * creation limit. When that limit is reached,
+     * Razorpay returns HTTP 429.
+     */
+    if (
+      error?.statusCode === 429 ||
+      error?.status === 429 ||
+      error?.error?.code === "RATE_LIMIT_EXCEEDED"
+    ) {
+      res.status(429).json({
+        success: false,
+        message:
+          "Online payment testing limit has been reached. Please try again later.",
+      });
+
+      return;
+    }
+
+    /**
+     * Handle Razorpay authentication/configuration
+     * failures more clearly.
+     */
+    if (error?.statusCode === 401 || error?.status === 401) {
+      res.status(502).json({
+        success: false,
+        message:
+          "Payment service authentication failed. Please contact support.",
+      });
+
+      return;
+    }
+
+    /**
+     * Handle other known Razorpay errors.
+     */
+    if (error?.statusCode >= 400 && error?.statusCode < 500) {
+      res.status(error.statusCode).json({
+        success: false,
+        message:
+          error?.error?.description ||
+          error?.message ||
+          "Unable to create payment.",
+      });
+
+      return;
+    }
+
     next(error);
   }
 }
@@ -42,11 +92,8 @@ export async function createPaymentLinkController(
  * Razorpay Payment Link webhook.
  *
  * IMPORTANT:
- * The route uses express.raw() and therefore
- * req.body MUST be a Buffer.
- *
- * This raw body is required for Razorpay
- * HMAC signature verification.
+ * The payment route MUST use express.raw()
+ * before express.json() for this request.
  */
 export async function paymentWebhook(
   req: Request,
@@ -60,11 +107,6 @@ export async function paymentWebhook(
 
     console.log("Time:", new Date().toISOString());
 
-    /**
-     * Razorpay sends:
-     *
-     * X-Razorpay-Signature
-     */
     const signatureHeader = req.headers["x-razorpay-signature"];
 
     const signature = Array.isArray(signatureHeader)
@@ -85,13 +127,8 @@ export async function paymentWebhook(
     console.log("Signature:", signature);
 
     /**
-     * IMPORTANT:
-     *
-     * Do NOT JSON.stringify(req.body).
-     * Do NOT parse the body before signature
-     * verification.
-     *
-     * Razorpay signs the original raw body.
+     * Razorpay signature verification requires
+     * the original raw request body.
      */
     if (!Buffer.isBuffer(req.body)) {
       console.error("Webhook body is not a raw Buffer.", {
@@ -116,9 +153,6 @@ export async function paymentWebhook(
 
     console.log("====================================");
 
-    /**
-     * Razorpay expects a successful 2xx response.
-     */
     res.status(200).json({
       success: true,
     });
