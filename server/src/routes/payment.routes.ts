@@ -2,7 +2,7 @@ import { Router } from "express";
 import express from "express";
 
 import {
-  createPaymentLink,
+  createPaymentLinkController,
   paymentWebhook,
 } from "../controllers/payment.controller";
 
@@ -11,7 +11,7 @@ const router = Router();
 /**
  * Razorpay webhook.
  *
- * Raw body is required for signature verification.
+ * MUST receive the raw request body.
  */
 router.post(
   "/webhook",
@@ -24,6 +24,6 @@ router.post(
 /**
  * Create Razorpay Payment Link.
  */
-router.post("/link/:bookingId", createPaymentLink);
+router.post("/link/:bookingId", createPaymentLinkController);
 
 export default router;

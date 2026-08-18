@@ -1,17 +1,14 @@
 import express, { NextFunction, Request, Response } from "express";
 
 import cors from "cors";
-
 import dotenv from "dotenv";
 
 import { connectDatabase } from "./config/database";
 
 import packageRoutes from "./routes/package.routes";
-
 import bookingRoutes from "./routes/booking.routes";
-
 import paymentRoutes from "./routes/payment.routes";
-
+import googleReviewsRoutes from "./routes/google-reviews.routes";
 import adminAuthRoutes from "./routes/admin-auth.routes";
 
 dotenv.config();
@@ -50,10 +47,16 @@ app.get("/api/health/ready", (_req: Request, res: Response) => {
 });
 
 /**
- * Normal JSON requests.
+ * IMPORTANT
  *
- * Payment webhook uses route-level
- * express.raw() middleware.
+ * Payment webhook must be registered BEFORE
+ * express.json() so the webhook route receives
+ * the original raw request body.
+ */
+app.use("/api/payments", paymentRoutes);
+
+/**
+ * Normal JSON requests.
  */
 app.use(express.json());
 
@@ -68,11 +71,14 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/bookings", bookingRoutes);
 
 /**
- * Payments
+ * Admin authentication
  */
-app.use("/api/payments", paymentRoutes);
-
 app.use("/api/admin/auth", adminAuthRoutes);
+
+/**
+ * Google reviews
+ */
+app.use("/api/google-reviews", googleReviewsRoutes);
 
 /**
  * 404
