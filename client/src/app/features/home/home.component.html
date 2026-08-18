@@ -10,8 +10,6 @@
 
         <div class="hero-content">
 
-            <!-- BRAND -->
-
             <div class="hero-brand">
 
                 <div class="hero-brand-mark">
@@ -25,30 +23,21 @@
                     </span>
 
                     <span class="hero-brand-subtitle">
-                        Mangrove Kayaking & Adventure
+                        Mangrove Kayaking &amp; Adventure
                     </span>
 
                 </div>
 
             </div>
 
-
-            <!-- EYEBROW -->
-
             <span class="hero-eyebrow">
                 Kayak · Explore · Escape
             </span>
-
-
-            <!-- TITLE -->
 
             <h1>
                 Paddle into
                 <em>nature.</em>
             </h1>
-
-
-            <!-- DESCRIPTION -->
 
             <p>
                 Explore peaceful mangrove waters,
@@ -56,10 +45,8 @@
                 worth taking home.
             </p>
 
-
-            <!-- CTA -->
-
             <a class="hero-button" href="#experiences" (click)="$event.preventDefault(); scrollToExperiences()">
+
                 <span class="hero-button-text">
                     Explore Experiences
                 </span>
@@ -67,12 +54,10 @@
                 <span class="hero-button-arrow">
                     ↓
                 </span>
+
             </a>
 
         </div>
-
-
-        <!-- HERO BOTTOM -->
 
         <div class="hero-bottom">
 
@@ -112,32 +97,20 @@
         </div>
 
 
-        <!-- LOADING -->
-
         @if (loading) {
 
         <div class="loading">
             Loading experiences...
         </div>
 
-        }
-
-
-        <!-- ERROR -->
-
-        @else if (error) {
+        } @else if (error) {
 
         <div class="loading">
             Unable to load experiences.
             Please try again.
         </div>
 
-        }
-
-
-        <!-- PACKAGES -->
-
-        @else {
+        } @else {
 
         @if (packages.length > 0) {
 
@@ -149,9 +122,6 @@
             ) {
 
             <article class="package-card">
-
-
-                <!-- PACKAGE IMAGE -->
 
                 <div class="package-image">
 
@@ -175,9 +145,6 @@
 
                     }
 
-
-                    <!-- DISCOUNT -->
-
                     @if (hasDiscount(package)) {
 
                     <span class="discount-badge">
@@ -189,12 +156,7 @@
                 </div>
 
 
-                <!-- PACKAGE CONTENT -->
-
                 <div class="package-content">
-
-
-                    <!-- TOP -->
 
                     <div class="package-top">
 
@@ -215,8 +177,6 @@
                         </div>
 
 
-                        <!-- PRICE -->
-
                         <div class="price">
 
                             @if (hasDiscount(package)) {
@@ -225,10 +185,7 @@
                                 ₹{{ getDiscountedPrice(package) }}
                             </strong>
 
-                            <span style="
-                          text-decoration: line-through;
-                          opacity: 0.55;
-                        ">
+                            <span class="original-price">
                                 ₹{{ package.price }}
                             </span>
 
@@ -249,8 +206,6 @@
                     </div>
 
 
-                    <!-- DESCRIPTION -->
-
                     @if (package.description) {
 
                     <p class="description">
@@ -260,8 +215,6 @@
                     }
 
 
-                    <!-- OFFER -->
-
                     @if (hasDiscount(package)) {
 
                     <div class="offer">
@@ -270,8 +223,6 @@
 
                     }
 
-
-                    <!-- BOOK -->
 
                     <button type="button" class="book-button" (click)="bookNow(package)">
 
@@ -307,131 +258,141 @@
 
 
     <!-- =====================================================
-       REVIEWS
+       GOOGLE REVIEWS
        ===================================================== -->
 
     <section class="reviews-section">
 
         <div class="reviews-container">
 
+
             <div class="reviews-heading">
 
-                <span class="eyebrow">
-                    Guest Experiences
-                </span>
+                <div class="reviews-heading-top">
+
+                    <span class="eyebrow">
+                        Google Reviews
+                    </span>
+
+                    <span class="google-label">
+                        G
+                    </span>
+
+                </div>
 
                 <h2>
-                    Loved by adventurers.
+                    Loved by<br />
+                    our guests.
                 </h2>
+
+                <p class="reviews-intro">
+                    Real experiences from people who
+                    paddled with River Edge.
+                </p>
 
             </div>
 
 
+            <!-- REVIEWS -->
+
             <div class="reviews-grid">
 
-                <!-- REVIEW 1 -->
+                @for (
+                review of googleReviews;
+                track review.name
+                ) {
 
                 <article class="review-card">
+
+
+                    <!-- TOP -->
+
+                    <div class="review-card-top">
+
+                        <div class="review-avatar">
+                            {{ review.name.charAt(0).toUpperCase() }}
+                        </div>
+
+                        <div class="review-person">
+
+                            <strong>
+                                {{ review.name }}
+                            </strong>
+
+                            @if (review.reviewerType) {
+
+                            <span>
+                                {{ review.reviewerType }}
+                            </span>
+
+                            }
+
+                        </div>
+
+                        <span class="google-mini">
+                            G
+                        </span>
+
+                    </div>
+
+
+                    <!-- STARS -->
 
                     <div class="review-stars">
                         ★★★★★
                     </div>
 
+
+                    <!-- DATE -->
+
+                    <span class="review-date">
+                        {{ review.date }}
+                    </span>
+
+
+                    <!-- TEXT -->
+
                     <p>
-                        A beautiful experience through the mangroves.
-                        Peaceful waters, friendly service and an
-                        unforgettable adventure.
+                        {{ review.text }}
                     </p>
 
-                    <div class="review-author">
-                        Google Guest
-                    </div>
+
+                    <!-- PROFILE -->
+
+                    <a class="review-link" [href]="review.profileUrl" target="_blank" rel="noopener noreferrer">
+                        View on Google
+                        <span>↗</span>
+                    </a>
 
                 </article>
 
+                }
 
-                <!-- REVIEW 2 -->
+            </div>
 
-                <article class="review-card">
 
-                    <div class="review-stars">
+            <!-- GOOGLE CTA -->
+
+            <div class="reviews-footer">
+
+                <div class="reviews-summary">
+
+                    <span class="summary-stars">
                         ★★★★★
-                    </div>
+                    </span>
 
-                    <p>
-                        Wonderful kayaking experience.
-                        Everything was well organised and the
-                        surroundings were absolutely beautiful.
-                    </p>
+                    <span>
+                        See more guest experiences on Google
+                    </span>
 
-                    <div class="review-author">
-                        Google Guest
-                    </div>
+                </div>
 
-                </article>
-
-
-                <!-- REVIEW 3 -->
-
-                <article class="review-card">
-
-                    <div class="review-stars">
-                        ★★★★★
-                    </div>
-
-                    <p>
-                        One of the most peaceful adventures.
-                        Highly recommended for anyone who wants
-                        to explore the mangroves.
-                    </p>
-
-                    <div class="review-author">
-                        Google Guest
-                    </div>
-
-                </article>
-
-
-                <!-- REVIEW 4 -->
-
-                <article class="review-card">
-
-                    <div class="review-stars">
-                        ★★★★★
-                    </div>
-
-                    <p>
-                        Great experience from start to finish.
-                        Beautiful location and a memorable
-                        kayaking trip.
-                    </p>
-
-                    <div class="review-author">
-                        Google Guest
-                    </div>
-
-                </article>
-
-
-                <!-- REVIEW 5 -->
-
-                <article class="review-card">
-
-                    <div class="review-stars">
-                        ★★★★★
-                    </div>
-
-                    <p>
-                        A fantastic way to spend time surrounded
-                        by nature. Calm water, beautiful mangroves
-                        and a great adventure.
-                    </p>
-
-                    <div class="review-author">
-                        Google Guest
-                    </div>
-
-                </article>
+                <a class="google-review-button"
+                    href="https://www.google.com/search?q=River+Edge+Mangrove+Kayaking+Adventure" target="_blank"
+                    rel="noopener noreferrer">
+                    See all reviews
+                    <span>↗</span>
+                </a>
 
             </div>
 
@@ -447,9 +408,6 @@
     <section class="location-section">
 
         <div class="location-container">
-
-
-            <!-- LOCATION CONTENT -->
 
             <div class="location-content">
 
@@ -468,7 +426,6 @@
                     Adventure and start your journey.
                 </p>
 
-
                 <a class="location-button" href="https://share.google/Rp6uMPSE3NUKZHxOR" target="_blank"
                     rel="noopener noreferrer">
                     Get Directions
@@ -476,33 +433,27 @@
                     <span>
                         ↗
                     </span>
+
                 </a>
 
             </div>
 
 
-            <!-- LOCATION VISUAL -->
-
             <div class="location-map">
 
-                <div style="
-            width: 100%;
-            height: 100%;
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-          ">
+                <div class="location-map-inner">
 
-                    River Edge
-                    <br />
+                    <span class="location-pin">
+                        📍
+                    </span>
 
-                    Mangrove Kayaking & Adventure
+                    <strong>
+                        River Edge
+                    </strong>
+
+                    <span>
+                        Mangrove Kayaking &amp; Adventure
+                    </span>
 
                 </div>
 
