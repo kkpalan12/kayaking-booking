@@ -62,6 +62,10 @@ export async function createPaymentLink(bookingId: string) {
 
     reminder_enable: false,
 
+    callback_url: `${process.env.CLIENT_URL}/payment-success`,
+
+    callback_method: "get",
+
     notes: {
       booking_id: booking.bookingId,
       package_name: booking.packageName,

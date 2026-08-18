@@ -1,0 +1,202 @@
+<main class="home">
+
+    <section class="hero">
+
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+
+            <span class="eyebrow">
+                MANGROVE ADVENTURES
+            </span>
+
+            <h1>
+                Paddle into<br />
+                nature.
+            </h1>
+
+            <p>
+                Explore peaceful mangrove waters,
+                one unforgettable experience at a time.
+            </p>
+
+            <a class="hero-button" href="#experiences">
+                Explore Experiences
+                <span>↓</span>
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <section id="experiences" class="experiences">
+
+        <div class="section-heading">
+
+            <span class="eyebrow">
+                OUR EXPERIENCES
+            </span>
+
+            <h2>
+                Choose your adventure
+            </h2>
+
+            <p>
+                Simple booking. Beautiful experiences.
+            </p>
+
+        </div>
+
+
+        @if (loading) {
+
+        <div class="loading">
+            Loading experiences...
+        </div>
+
+        } @else {
+
+        <div class="package-list">
+
+            @for (
+            package of packages;
+            track package._id
+            ) {
+
+            <article class="package-card">
+
+                <div class="package-image">
+
+                    @if (package.image) {
+
+                    <img [src]="package.image" [alt]="package.name" />
+
+                    } @else {
+
+                    <div class="image-placeholder">
+                        <span>
+                            {{ package.pricingType ===
+                            'PER_PERSON'
+                            ? '🌿'
+                            : '❤️'
+                            }}
+                        </span>
+                    </div>
+
+                    }
+
+                    @if (
+                    package.discount.enabled
+                    ) {
+
+                    <span class="discount-badge">
+                        OFFER
+                    </span>
+
+                    }
+
+                </div>
+
+
+                <div class="package-content">
+
+                    <div class="package-top">
+
+                        <div>
+
+                            <h3>
+                                {{ package.name }}
+                            </h3>
+
+                            @if (package.duration) {
+
+                            <span class="duration">
+                                ⏱ {{ package.duration }}
+                            </span>
+
+                            }
+
+                        </div>
+
+                        <div class="price">
+
+                            <strong>
+                                ₹{{ package.price }}
+                            </strong>
+
+                            <span>
+                                {{
+                                package.pricingType ===
+                                'PER_PERSON'
+                                ? '/ person'
+                                : '/ booking'
+                                }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    @if (package.description) {
+
+                    <p class="description">
+                        {{ package.description }}
+                    </p>
+
+                    }
+
+
+                    @if (
+                    package.discount.enabled
+                    ) {
+
+                    <div class="offer">
+
+                        {{
+                        package.discount.type ===
+                        'PERCENTAGE'
+                        ? package.discount.value +
+                        '% OFF'
+                        : '₹' +
+                        package.discount.value +
+                        ' OFF'
+                        }}
+
+                    </div>
+
+                    }
+
+
+                    <button type="button" class="book-button" (click)="bookNow(package)">
+                        Book Now
+                        <span>→</span>
+                    </button>
+
+                </div>
+
+            </article>
+
+            }
+
+        </div>
+
+        }
+
+    </section>
+
+
+    <footer class="footer">
+
+        <span>
+            🌿 Mangrove Adventures
+        </span>
+
+        <small>
+            Discover. Paddle. Remember.
+        </small>
+
+    </footer>
+
+</main>

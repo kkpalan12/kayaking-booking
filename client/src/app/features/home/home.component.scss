@@ -1,0 +1,321 @@
+:host {
+    display: block;
+}
+
+.home {
+    min-height: 100vh;
+    background: #f6f4ef;
+    color: #17352c;
+}
+
+.hero {
+    position: relative;
+    min-height: 72vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+
+    background:
+        linear-gradient(180deg,
+            rgba(8, 35, 27, 0.08),
+            rgba(8, 35, 27, 0.82)),
+        url('/assets/mangrove-hero.jpg') center / cover no-repeat;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg,
+            transparent 35%,
+            rgba(0, 0, 0, 0.62));
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+
+    width: 100%;
+    max-width: 760px;
+
+    padding: 0 24px 42px;
+
+    color: white;
+}
+
+.eyebrow {
+    display: inline-block;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.hero h1 {
+    margin: 12px 0;
+
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+}
+
+.hero p {
+    max-width: 430px;
+
+    margin: 0 0 24px;
+
+    font-size: 1rem;
+    line-height: 1.6;
+
+    opacity: 0.92;
+}
+
+.hero-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+
+    padding: 14px 20px;
+
+    border-radius: 999px;
+
+    background: white;
+    color: #17352c;
+
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.experiences {
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 64px 20px;
+}
+
+.section-heading {
+    margin-bottom: 30px;
+}
+
+.section-heading .eyebrow {
+    color: #8b7250;
+}
+
+.section-heading h2 {
+    margin: 8px 0;
+
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+}
+
+.section-heading p {
+    margin: 0;
+
+    color: #65736d;
+}
+
+.package-list {
+    display: grid;
+    gap: 20px;
+}
+
+.package-card {
+    overflow: hidden;
+
+    border-radius: 24px;
+
+    background: white;
+
+    box-shadow:
+        0 10px 35px rgba(23, 53, 44, 0.08);
+}
+
+.package-image {
+    position: relative;
+
+    height: 210px;
+
+    overflow: hidden;
+}
+
+.package-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.image-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    background:
+        linear-gradient(135deg,
+            #dce8df,
+            #b8cec1);
+
+    font-size: 4rem;
+}
+
+.discount-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    background: #f4c95d;
+    color: #17352c;
+
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+.package-content {
+    padding: 22px;
+}
+
+.package-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.package-top h3 {
+    margin: 0 0 8px;
+
+    font-size: 1.25rem;
+    line-height: 1.15;
+}
+
+.duration {
+    color: #78847e;
+
+    font-size: 0.82rem;
+}
+
+.price {
+    flex-shrink: 0;
+
+    text-align: right;
+}
+
+.price strong {
+    display: block;
+
+    font-size: 1.3rem;
+}
+
+.price span {
+    color: #78847e;
+
+    font-size: 0.72rem;
+}
+
+.description {
+    margin: 16px 0;
+
+    color: #64716c;
+
+    line-height: 1.55;
+    font-size: 0.9rem;
+}
+
+.offer {
+    display: inline-block;
+
+    margin-bottom: 16px;
+    padding: 6px 10px;
+
+    border-radius: 8px;
+
+    background: #e6f0e8;
+    color: #286344;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.book-button {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    min-height: 52px;
+
+    padding: 0 18px;
+
+    border: 0;
+    border-radius: 14px;
+
+    background: #17352c;
+    color: white;
+
+    font: inherit;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.loading {
+    padding: 60px 0;
+
+    text-align: center;
+
+    color: #78847e;
+}
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 30px 20px 40px;
+
+    text-align: center;
+
+    color: #65736d;
+}
+
+.footer span {
+    font-weight: 700;
+}
+
+.footer small {
+    font-size: 0.78rem;
+}
+
+@media (min-width: 700px) {
+
+    .hero-content {
+        padding: 0 48px 60px;
+    }
+
+    .experiences {
+        padding: 90px 32px;
+    }
+
+    .package-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (min-width: 1050px) {
+
+    .package-list {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}

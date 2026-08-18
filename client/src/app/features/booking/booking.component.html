@@ -1,0 +1,233 @@
+<main class="booking-page">
+
+    @if (loading) {
+
+    <div class="loading">
+        Loading experience...
+    </div>
+
+    } @else {
+
+    <header class="booking-header">
+
+        <button type="button" class="back-button" (click)="goBack()" aria-label="Go back">
+            ←
+        </button>
+
+        <div>
+            <span class="eyebrow">
+                BOOK YOUR EXPERIENCE
+            </span>
+
+            <h1>
+                {{ packageData.name }}
+            </h1>
+        </div>
+
+    </header>
+
+
+    <section class="booking-card">
+
+        <div class="experience-summary">
+
+            <div class="experience-icon">
+                🌿
+            </div>
+
+            <div>
+                <strong>
+                    {{ packageData.name }}
+                </strong>
+
+                <span>
+                    ₹{{ packageData.price }}
+                    {{
+                    packageData.pricingType ===
+                    'PER_PERSON'
+                    ? ' / person'
+                    : ' / booking'
+                    }}
+                </span>
+            </div>
+
+        </div>
+
+
+        <form [formGroup]="bookingForm" (ngSubmit)="payNow()">
+
+            <!-- DATE -->
+
+            <section class="form-section">
+
+                <label>
+                    📅 Date
+                </label>
+
+                <input type="date" formControlName="bookingDate" [min]="minDate" />
+
+            </section>
+
+
+            <!-- TIME -->
+
+            <section class="form-section">
+
+                <label>
+                    🕐 Time
+                </label>
+
+                <div class="time-grid">
+
+                    @for (
+                    slot of timeSlots;
+                    track slot
+                    ) {
+
+                    <button type="button" class="time-option" [class.selected]="
+                  bookingForm.controls.timeSlot.value
+                    === slot
+                " (click)="
+                  bookingForm.controls.timeSlot
+                    .setValue(slot)
+                ">
+                        {{ slot }}
+                    </button>
+
+                    }
+
+                </div>
+
+            </section>
+
+
+            <!-- PEOPLE -->
+
+            @if (
+            packageData.pricingType ===
+            'PER_PERSON'
+            ) {
+
+            <section class="form-section">
+
+                <label>
+                    👥 People
+                </label>
+
+                <div class="quantity-control">
+
+                    <button type="button" (click)="decreaseQuantity()">
+                        −
+                    </button>
+
+                    <strong>
+                        {{ quantity }}
+                    </strong>
+
+                    <button type="button" (click)="increaseQuantity()">
+                        +
+                    </button>
+
+                </div>
+
+            </section>
+
+            }
+
+
+            <!-- CUSTOMER -->
+
+            <section class="form-section">
+
+                <label>
+                    Your details
+                </label>
+
+                <input type="text" placeholder="Your name" formControlName="customerName" autocomplete="name" />
+
+                <input type="tel" placeholder="WhatsApp number" formControlName="customerPhone" maxlength="10"
+                    inputmode="numeric" autocomplete="tel" />
+
+                @if (
+                bookingForm.controls.customerPhone
+                .invalid &&
+                bookingForm.controls.customerPhone.touched
+                ) {
+
+                <small class="field-error">
+                    Enter a valid 10-digit mobile number.
+                </small>
+
+                }
+
+            </section>
+
+
+            <!-- PRICE -->
+
+            <section class="price-summary">
+
+                <div>
+                    <span>Subtotal</span>
+                    <strong>₹{{ subtotal }}</strong>
+                </div>
+
+                @if (discountAmount > 0) {
+
+                <div class="discount-row">
+                    <span>Discount</span>
+
+                    <strong>
+                        − ₹{{ discountAmount }}
+                    </strong>
+                </div>
+
+                }
+
+                <div class="total-row">
+                    <span>Total</span>
+
+                    <strong>
+                        ₹{{ total }}
+                    </strong>
+                </div>
+
+            </section>
+
+
+            @if (errorMessage) {
+
+            <div class="error-message">
+                {{ errorMessage }}
+            </div>
+
+            }
+
+
+            <button type="submit" class="pay-button" [disabled]="submitting">
+
+                @if (submitting) {
+
+                Creating payment...
+
+                } @else {
+
+                Pay ₹{{ total }}
+                <span>→</span>
+
+                }
+
+            </button>
+
+
+            <p class="secure-note">
+                🔒 Secure payment powered by Razorpay
+            </p>
+
+        </form>
+
+    </section>
+
+    }
+
+</main>
