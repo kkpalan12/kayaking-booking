@@ -3,6 +3,7 @@ import Razorpay from "razorpay";
 
 import { BookingModel } from "../models/booking.model";
 import { PaymentModel } from "../models/payment.model";
+import { sendBookingConfirmation } from "./whatsapp.service";
 
 function getRazorpayClient(): Razorpay {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -186,4 +187,25 @@ export async function handlePaymentWebhook(
   booking.bookingStatus = "CONFIRMED";
 
   await booking.save();
+  try {
+    await sendBookingConfirmation({
+      customerName: booking.customerName,
+
+      customerPhone: booking.customerPhone,
+
+      packageName: booking.packageName,
+
+      bookingDate: booking.bookingDate,
+
+      timeSlot: booking.timeSlot,
+
+      quantity: booking.quantity,
+
+      totalAmount: booking.totalAmount,
+
+      bookingId: booking.bookingId,
+    });
+  } catch (error) {
+    console.error("WhatsApp confirmation failed:", error);
+  }
 }

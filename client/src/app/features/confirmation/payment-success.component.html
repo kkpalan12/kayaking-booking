@@ -1,0 +1,45 @@
+<main class="success-page">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <span class="eyebrow">
+            PAYMENT RECEIVED
+        </span>
+
+        <h1>
+            You're all set!
+        </h1>
+
+        <p>
+            Your mangrove adventure is almost ready.
+            We have received your payment.
+        </p>
+
+        @if (bookingId) {
+        <div class="booking-reference">
+            <span>Booking ID</span>
+            <strong>{{ bookingId }}</strong>
+        </div>
+        }
+
+        <div class="next-box">
+            <strong>What's next?</strong>
+
+            <p>
+                We'll confirm your booking and contact
+                you on WhatsApp with the details.
+            </p>
+        </div>
+
+        <a routerLink="/" class="home-button">
+            Back to home
+            <span>→</span>
+        </a>
+
+    </div>
+
+</main>

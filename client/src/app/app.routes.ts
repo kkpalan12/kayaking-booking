@@ -14,6 +14,13 @@ export const routes: Routes = [
         (m) => m.BookingComponent,
       ),
   },
+  {
+    path: 'payment-success',
+    loadComponent: () =>
+      import('./features/confirmation/payment-success.component').then(
+        (m) => m.PaymentSuccessComponent,
+      ),
+  },
 
   {
     path: '**',
