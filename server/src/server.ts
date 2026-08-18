@@ -1,12 +1,18 @@
 import express, { NextFunction, Request, Response } from "express";
+
 import cors from "cors";
+
 import dotenv from "dotenv";
 
 import { connectDatabase } from "./config/database";
 
 import packageRoutes from "./routes/package.routes";
+
 import bookingRoutes from "./routes/booking.routes";
+
 import paymentRoutes from "./routes/payment.routes";
+
+import googleReviewsRoutes from "./routes/google-reviews.routes";
 
 dotenv.config();
 
@@ -28,9 +34,6 @@ app.use(
 
 /**
  * Health
- *
- * Kept directly in server.ts because there is
- * no separate health.routes.ts in this project.
  */
 app.get("/api/health", (_req: Request, res: Response) => {
   res.status(200).json({
@@ -49,8 +52,8 @@ app.get("/api/health/ready", (_req: Request, res: Response) => {
 /**
  * Normal JSON requests.
  *
- * Payment webhook has route-level express.raw()
- * middleware inside payment.routes.ts.
+ * Payment webhook uses route-level
+ * express.raw() middleware.
  */
 app.use(express.json());
 
@@ -66,9 +69,6 @@ app.use("/api/bookings", bookingRoutes);
 
 /**
  * Payments
- *
- * POST /api/payments/link/:bookingId
- * POST /api/payments/webhook
  */
 app.use("/api/payments", paymentRoutes);
 

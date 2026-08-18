@@ -16,7 +16,7 @@ function getConfig() {
 
   const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
 
-  const apiVersion = process.env.WHATSAPP_API_VERSION || "v23.0";
+  const apiVersion = process.env.WHATSAPP_API_VERSION || "v25.0";
 
   if (!accessToken || !phoneNumberId) {
     throw new Error("WhatsApp is not configured");
@@ -41,21 +41,6 @@ function normalizePhone(phone: string): string {
   }
 
   return cleaned;
-}
-
-function formatBookingDate(date: Date | string): string {
-  const parsedDate = date instanceof Date ? date : new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return String(date);
-  }
-
-  return parsedDate.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    timeZone: "Asia/Kolkata",
-  });
 }
 
 function postToWhatsApp(
@@ -131,10 +116,14 @@ export async function sendBookingConfirmation(
 
   const phone = normalizePhone(data.customerPhone);
 
-  const bookingDate = formatBookingDate(data.bookingDate);
-
   const url = `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`;
 
+  /*
+   * TEMPORARY TEST
+   *
+   * Meta's hello_world template has ZERO
+   * parameters, so we must not send components.
+   */
   await postToWhatsApp(url, accessToken, {
     messaging_product: "whatsapp",
 
@@ -143,50 +132,13 @@ export async function sendBookingConfirmation(
     type: "template",
 
     template: {
-      name: "kayaking_booking_confirm",
+      name: "hello_world",
 
       language: {
         code: "en_US",
       },
-
-      components: [
-        {
-          type: "body",
-
-          parameters: [
-            {
-              type: "text",
-              text: data.customerName,
-            },
-            {
-              type: "text",
-              text: data.packageName,
-            },
-            {
-              type: "text",
-              text: bookingDate,
-            },
-            {
-              type: "text",
-              text: data.timeSlot,
-            },
-            {
-              type: "text",
-              text: String(data.quantity),
-            },
-            {
-              type: "text",
-              text: `₹${data.totalAmount}`,
-            },
-            {
-              type: "text",
-              text: data.bookingId,
-            },
-          ],
-        },
-      ],
     },
   });
 
-  console.log(`WhatsApp confirmation sent for ${data.bookingId}`);
+  console.log(`WhatsApp test message sent for ${data.bookingId}`);
 }
