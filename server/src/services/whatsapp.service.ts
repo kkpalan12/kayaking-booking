@@ -143,10 +143,10 @@ export async function sendBookingConfirmation(
     type: "template",
 
     template: {
-      name: "booking_confirmation",
+      name: "kayaking_booking_confirm",
 
       language: {
-        code: "en",
+        code: "en_US",
       },
 
       components: [
