@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import {
   createPaymentLink,
   handlePaymentWebhook,
+  simulateTestPayment,
 } from "../services/payment.service";
 
 /**
@@ -36,11 +37,6 @@ export async function createPaymentLinkController(
   } catch (error: any) {
     console.error("Create payment link failed:", error);
 
-    /**
-     * Razorpay Test Mode has a Payment Link
-     * creation limit. When that limit is reached,
-     * Razorpay returns HTTP 429.
-     */
     if (
       error?.statusCode === 429 ||
       error?.status === 429 ||
@@ -55,10 +51,6 @@ export async function createPaymentLinkController(
       return;
     }
 
-    /**
-     * Handle Razorpay authentication/configuration
-     * failures more clearly.
-     */
     if (error?.statusCode === 401 || error?.status === 401) {
       res.status(502).json({
         success: false,
@@ -69,9 +61,6 @@ export async function createPaymentLinkController(
       return;
     }
 
-    /**
-     * Handle other known Razorpay errors.
-     */
     if (error?.statusCode >= 400 && error?.statusCode < 500) {
       res.status(error.statusCode).json({
         success: false,
@@ -89,11 +78,47 @@ export async function createPaymentLinkController(
 }
 
 /**
+ * Development/test-only payment simulation.
+ *
+ * POST /api/payments/test/:bookingId
+ *
+ * Protected by admin authentication.
+ */
+export async function simulateTestPaymentController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const bookingId = String(req.params.bookingId || "").trim();
+
+    if (!bookingId) {
+      res.status(400).json({
+        success: false,
+        message: "Booking ID is required",
+      });
+
+      return;
+    }
+
+    const booking = await simulateTestPayment(bookingId);
+
+    res.status(200).json({
+      success: true,
+      data: booking,
+      message: "Test payment simulated successfully. Booking confirmed.",
+    });
+  } catch (error: any) {
+    console.error("Test payment failed:", error);
+
+    next(error);
+  }
+}
+
+/**
  * Razorpay Payment Link webhook.
  *
- * IMPORTANT:
- * The payment route MUST use express.raw()
- * before express.json() for this request.
+ * The route MUST receive the original raw body.
  */
 export async function paymentWebhook(
   req: Request,
@@ -126,10 +151,6 @@ export async function paymentWebhook(
 
     console.log("Signature:", signature);
 
-    /**
-     * Razorpay signature verification requires
-     * the original raw request body.
-     */
     if (!Buffer.isBuffer(req.body)) {
       console.error("Webhook body is not a raw Buffer.", {
         bodyType: typeof req.body,

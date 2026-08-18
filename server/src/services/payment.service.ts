@@ -209,3 +209,100 @@ export async function handlePaymentWebhook(
     console.error("WhatsApp confirmation failed:", error);
   }
 }
+/**
+ * Development/test-only payment simulation.
+ *
+ * This NEVER calls Razorpay.
+ *
+ * It simulates the successful result of a
+ * payment_link.paid webhook so the full
+ * booking workflow can be tested when
+ * Razorpay Test Mode limits are exhausted.
+ *
+ * IMPORTANT:
+ * This endpoint is also protected by admin auth,
+ * and must be disabled in production.
+ */
+export async function simulateTestPayment(bookingId: string) {
+  if (process.env.ENABLE_TEST_PAYMENT_FLOW !== "true") {
+    const error = new Error("Test payment flow is disabled") as Error & {
+      statusCode?: number;
+    };
+
+    error.statusCode = 403;
+
+    throw error;
+  }
+
+  const booking = await BookingModel.findOne({
+    bookingId,
+  });
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  /**
+   * Idempotency:
+   *
+   * If this booking is already paid,
+   * don't create another fake payment.
+   */
+  if (booking.paymentStatus === "PAID") {
+    return booking;
+  }
+
+  const testPaymentLinkId = `test_link_${booking.bookingId}`;
+
+  await PaymentModel.findOneAndUpdate(
+    {
+      bookingId: booking._id,
+    },
+    {
+      bookingId: booking._id,
+      amount: booking.totalAmount,
+      currency: "INR",
+      razorpayPaymentLinkId: testPaymentLinkId,
+      status: "PAID",
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
+
+  booking.paymentStatus = "PAID";
+  booking.bookingStatus = "CONFIRMED";
+
+  await booking.save();
+
+  /**
+   * WhatsApp confirmation.
+   *
+   * The service already catches its own
+   * WhatsApp failures in the normal webhook flow.
+   */
+  try {
+    await sendBookingConfirmation({
+      customerName: booking.customerName,
+
+      customerPhone: booking.customerPhone,
+
+      packageName: booking.packageName,
+
+      bookingDate: booking.bookingDate,
+
+      timeSlot: booking.timeSlot,
+
+      quantity: booking.quantity,
+
+      totalAmount: booking.totalAmount,
+
+      bookingId: booking.bookingId,
+    });
+  } catch (error) {
+    console.error("Test payment WhatsApp confirmation failed:", error);
+  }
+
+  return booking;
+}

@@ -10,6 +10,7 @@ import bookingRoutes from "./routes/booking.routes";
 import paymentRoutes from "./routes/payment.routes";
 import googleReviewsRoutes from "./routes/google-reviews.routes";
 import adminAuthRoutes from "./routes/admin-auth.routes";
+import whatsappWebhookRoutes from "./routes/whatsapp-webhook.routes";
 
 dotenv.config();
 
@@ -59,6 +60,13 @@ app.use("/api/payments", paymentRoutes);
  * Normal JSON requests.
  */
 app.use(express.json());
+/**
+ * WhatsApp webhook
+ *
+ * GET  /api/whatsapp/webhook
+ * POST /api/whatsapp/webhook
+ */
+app.use("/api/whatsapp", whatsappWebhookRoutes);
 
 /**
  * Packages
