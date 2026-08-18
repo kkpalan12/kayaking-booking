@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import Razorpay from "razorpay";
 
 import { BookingModel } from "../models/booking.model";
@@ -40,6 +41,8 @@ export async function createPaymentLink(bookingId: string) {
 
   const amountInPaise = Math.round(booking.totalAmount * 100);
 
+  const clientUrl = process.env.CLIENT_URL || "http://localhost:4200";
+
   const paymentLink = await razorpay.paymentLink.create({
     amount: amountInPaise,
     currency: "INR",
@@ -62,7 +65,7 @@ export async function createPaymentLink(bookingId: string) {
 
     reminder_enable: false,
 
-    callback_url: `${process.env.CLIENT_URL}/payment-success`,
+    callback_url: `${clientUrl}/payment-success`,
 
     callback_method: "get",
 
@@ -96,4 +99,91 @@ export async function createPaymentLink(bookingId: string) {
     paymentLinkId: paymentLink.id,
     paymentUrl: paymentLink.short_url,
   };
+}
+
+/**
+ * Handles Razorpay payment_link.paid webhook.
+ *
+ * IMPORTANT:
+ * rawBody MUST be the original request body.
+ */
+export async function handlePaymentWebhook(
+  rawBody: string,
+  signature: string,
+): Promise<void> {
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+
+  if (!secret) {
+    throw new Error("RAZORPAY_WEBHOOK_SECRET is not configured");
+  }
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(rawBody)
+    .digest("hex");
+
+  const expectedBuffer = Buffer.from(expectedSignature, "utf8");
+
+  const receivedBuffer = Buffer.from(signature, "utf8");
+
+  if (expectedBuffer.length !== receivedBuffer.length) {
+    throw new Error("Invalid Razorpay webhook signature");
+  }
+
+  if (!crypto.timingSafeEqual(expectedBuffer, receivedBuffer)) {
+    throw new Error("Invalid Razorpay webhook signature");
+  }
+
+  const event = JSON.parse(rawBody);
+
+  if (event.event !== "payment_link.paid") {
+    return;
+  }
+
+  const paymentLink = event.payload?.payment_link?.entity;
+
+  if (!paymentLink) {
+    throw new Error("Payment link data missing from webhook");
+  }
+
+  const bookingId = paymentLink.reference_id;
+
+  if (!bookingId) {
+    throw new Error("Booking reference missing from payment link");
+  }
+
+  const booking = await BookingModel.findOne({
+    bookingId,
+  });
+
+  if (!booking) {
+    throw new Error(`Booking not found: ${bookingId}`);
+  }
+
+  /*
+   * Idempotency:
+   * Razorpay may retry webhook delivery.
+   * Updating an already-paid booking is safe.
+   */
+  await PaymentModel.findOneAndUpdate(
+    {
+      bookingId: booking._id,
+    },
+    {
+      bookingId: booking._id,
+      amount: booking.totalAmount,
+      currency: "INR",
+      razorpayPaymentLinkId: paymentLink.id,
+      status: "PAID",
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
+
+  booking.paymentStatus = "PAID";
+  booking.bookingStatus = "CONFIRMED";
+
+  await booking.save();
 }
