@@ -1,0 +1,223 @@
+<main class="admin-login-page">
+
+    <div class="login-background">
+
+        <div class="background-orb orb-one"></div>
+
+        <div class="background-orb orb-two"></div>
+
+    </div>
+
+
+    <section class="login-card">
+
+        <!-- BRAND -->
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                R
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    RIVER EDGE
+                </strong>
+
+                <span>
+                    MANGROVE KAYAKING & ADVENTURE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- HEADER -->
+
+        <div class="login-header">
+
+            <span class="eyebrow">
+                ADMIN PORTAL
+            </span>
+
+            <h1>
+                Welcome back.
+            </h1>
+
+            <p>
+                Sign in to manage your bookings
+                and River Edge experiences.
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+
+            <!-- EMAIL -->
+
+            <div class="field">
+
+                <label for="email">
+                    Email address
+                </label>
+
+                <input id="email" type="email" autocomplete="email" formControlName="email"
+                    placeholder="admin@riveredge.in" [class.invalid]="
+            email.invalid &&
+            email.touched
+          " />
+
+                @if (
+                email.invalid &&
+                email.touched
+                ) {
+
+                <span class="field-error">
+
+                    @if (email.errors?.['required']) {
+                    Email is required.
+                    }
+
+                    @else if (email.errors?.['email']) {
+                    Enter a valid email address.
+                    }
+
+                </span>
+
+                }
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="field">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input id="password" [type]="
+              showPassword
+                ? 'text'
+                : 'password'
+            " autocomplete="current-password" formControlName="password" placeholder="Enter your password"
+                        [class.invalid]="
+              password.invalid &&
+              password.touched
+            " />
+
+                    <button type="button" class="password-toggle" (click)="togglePassword()" [attr.aria-label]="
+              showPassword
+                ? 'Hide password'
+                : 'Show password'
+            ">
+                        {{ showPassword ? 'Hide' : 'Show' }}
+                    </button>
+
+                </div>
+
+                @if (
+                password.invalid &&
+                password.touched
+                ) {
+
+                <span class="field-error">
+
+                    @if (
+                    password.errors?.['required']
+                    ) {
+                    Password is required.
+                    }
+
+                    @else if (
+                    password.errors?.['minlength']
+                    ) {
+                    Password must be at least
+                    6 characters.
+                    }
+
+                </span>
+
+                }
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            @if (errorMessage) {
+
+            <div class="login-error">
+
+                <span class="error-icon">
+                    !
+                </span>
+
+                <span>
+                    {{ errorMessage }}
+                </span>
+
+            </div>
+
+            }
+
+
+            <!-- SUBMIT -->
+
+            <button type="submit" class="login-button" [disabled]="
+          loginForm.invalid ||
+          submitting
+        ">
+
+                @if (submitting) {
+
+                <span class="button-spinner"></span>
+
+                <span>
+                    Signing in...
+                </span>
+
+                }
+
+                @else {
+
+                <span>
+                    Sign in to dashboard
+                </span>
+
+                <span class="button-arrow">
+                    →
+                </span>
+
+                }
+
+            </button>
+
+        </form>
+
+
+        <!-- FOOTER -->
+
+        <div class="login-footer">
+
+            <span class="lock-icon">
+                🔒
+            </span>
+
+            <span>
+                Secure admin access
+            </span>
+
+        </div>
+
+    </section>
+
+</main>

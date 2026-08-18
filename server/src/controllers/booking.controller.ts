@@ -34,6 +34,7 @@ export async function getBooking(
         success: false,
         message: "Booking not found",
       });
+
       return;
     }
 
@@ -57,6 +58,40 @@ export async function getBookings(
     res.json({
       success: true,
       data: bookings,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateBookingStatus(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const status = String(req.body?.status || "");
+
+    const allowedStatuses = ["PENDING", "CONFIRMED", "CANCELLED"];
+
+    if (!allowedStatuses.includes(status)) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid booking status",
+      });
+
+      return;
+    }
+
+    const booking = await bookingService.updateBookingStatus(
+      String(req.params.bookingId),
+      status as "PENDING" | "CANCELLED",
+    );
+
+    res.json({
+      success: true,
+      data: booking,
+      message: "Booking status updated successfully",
     });
   } catch (error) {
     next(error);

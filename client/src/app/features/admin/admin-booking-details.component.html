@@ -1,0 +1,341 @@
+<main class="details-page">
+
+    @if (loading) {
+
+    <div class="page-state">
+
+        <div class="spinner"></div>
+
+        <span>
+            Loading booking...
+        </span>
+
+    </div>
+
+    }
+
+    @else if (error && !booking) {
+
+    <div class="page-state error-state">
+
+        <strong>
+            {{ error }}
+        </strong>
+
+        <a routerLink="/admin" class="back-link">
+            ← Back to dashboard
+        </a>
+
+    </div>
+
+    }
+
+    @else if (booking) {
+
+    <!-- HEADER -->
+
+    <header class="details-header">
+
+        <div>
+
+            <a routerLink="/admin" class="back-link">
+                ← Back to bookings
+            </a>
+
+            <span class="eyebrow">
+                BOOKING DETAILS
+            </span>
+
+            <h1>
+                {{ booking.bookingId }}
+            </h1>
+
+            <p>
+                Created
+                {{ formatCreatedDate(booking.createdAt) }}
+            </p>
+
+        </div>
+
+
+        <div class="header-status">
+
+            <span class="status booking" [class.confirmed]="
+            booking.bookingStatus === 'CONFIRMED'
+          " [class.pending]="
+            booking.bookingStatus === 'PENDING'
+          " [class.cancelled]="
+            booking.bookingStatus === 'CANCELLED'
+          ">
+                {{ booking.bookingStatus }}
+            </span>
+
+            <span class="status payment" [class.paid]="
+            booking.paymentStatus === 'PAID'
+          " [class.pending]="
+            booking.paymentStatus === 'PENDING'
+          " [class.failed]="
+            booking.paymentStatus === 'FAILED'
+          " [class.refunded]="
+            booking.paymentStatus === 'REFUNDED'
+          ">
+                {{ booking.paymentStatus }}
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- MESSAGES -->
+
+    @if (successMessage) {
+
+    <div class="success-banner">
+        ✓ {{ successMessage }}
+    </div>
+
+    }
+
+    @if (error) {
+
+    <div class="error-banner">
+        {{ error }}
+    </div>
+
+    }
+
+
+    <!-- CONTENT -->
+
+    <section class="details-grid">
+
+        <!-- CUSTOMER -->
+
+        <article class="detail-card">
+
+            <span class="card-eyebrow">
+                CUSTOMER
+            </span>
+
+            <h2>
+                {{ booking.customerName }}
+            </h2>
+
+            <div class="info-row">
+
+                <span>
+                    Phone
+                </span>
+
+                <strong>
+                    {{ booking.customerPhone }}
+                </strong>
+
+            </div>
+
+            <a class="whatsapp-button" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">
+                WhatsApp customer
+                <span>↗</span>
+            </a>
+
+        </article>
+
+
+        <!-- EXPERIENCE -->
+
+        <article class="detail-card">
+
+            <span class="card-eyebrow">
+                EXPERIENCE
+            </span>
+
+            <h2>
+                {{ booking.packageName }}
+            </h2>
+
+            <div class="info-row">
+
+                <span>
+                    Participants
+                </span>
+
+                <strong>
+                    {{ booking.quantity }}
+                    {{
+                    booking.quantity === 1
+                    ? 'person'
+                    : 'people'
+                    }}
+                </strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>
+                    Pricing
+                </span>
+
+                <strong>
+                    {{
+                    booking.pricingType ===
+                    'PER_PERSON'
+                    ? 'Per person'
+                    : 'Per booking'
+                    }}
+                </strong>
+
+            </div>
+
+        </article>
+
+
+        <!-- DATE -->
+
+        <article class="detail-card">
+
+            <span class="card-eyebrow">
+                ADVENTURE
+            </span>
+
+            <h2>
+                {{ formatDate(booking.bookingDate) }}
+            </h2>
+
+            <div class="info-row">
+
+                <span>
+                    Time
+                </span>
+
+                <strong>
+                    {{ booking.timeSlot }}
+                </strong>
+
+            </div>
+
+            <div class="info-row">
+
+                <span>
+                    Booking ID
+                </span>
+
+                <strong class="mono">
+                    {{ booking.bookingId }}
+                </strong>
+
+            </div>
+
+        </article>
+
+
+        <!-- PRICE -->
+
+        <article class="detail-card price-card">
+
+            <span class="card-eyebrow">
+                PAYMENT SUMMARY
+            </span>
+
+            <div class="price-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong>
+                    {{ formatCurrency(booking.subtotal) }}
+                </strong>
+
+            </div>
+
+            <div class="price-row discount">
+
+                <span>
+                    Discount
+                </span>
+
+                <strong>
+                    -
+                    {{
+                    formatCurrency(
+                    booking.discountAmount
+                    )
+                    }}
+                </strong>
+
+            </div>
+
+            <div class="price-divider"></div>
+
+            <div class="price-total">
+
+                <span>
+                    Total
+                </span>
+
+                <strong>
+                    {{
+                    formatCurrency(
+                    booking.totalAmount
+                    )
+                    }}
+                </strong>
+
+            </div>
+
+            <div class="payment-label">
+
+                Payment:
+                {{ booking.paymentStatus }}
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- ACTIONS -->
+
+    <section class="actions-card">
+
+        <div>
+
+            <span class="card-eyebrow">
+                BOOKING ACTIONS
+            </span>
+
+            <h2>
+                Manage this booking
+            </h2>
+
+            <p>
+                Update the booking status after
+                reviewing the payment and customer details.
+            </p>
+
+        </div>
+
+
+        <div class="actions">
+
+
+            @if (
+            booking.bookingStatus !== 'CANCELLED'
+            ) {
+
+            <button type="button" class="cancel-button" (click)="cancelBooking()" [disabled]="submitting">
+                Cancel booking
+            </button>
+
+            }
+
+        </div>
+
+    </section>
+
+    }
+
+</main>

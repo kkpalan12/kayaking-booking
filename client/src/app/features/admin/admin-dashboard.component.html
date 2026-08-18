@@ -1,0 +1,656 @@
+<main class="admin-page">
+
+    <!-- HEADER -->
+
+    <header class="admin-header">
+
+        <div class="admin-heading">
+
+            <div class="admin-brand">
+
+                <div class="admin-brand-mark">
+                    R
+                </div>
+
+                <div class="admin-brand-text">
+
+                    <strong>
+                        RIVER EDGE
+                    </strong>
+
+                    <span>
+                        MANGROVE KAYAKING &amp; ADVENTURE
+                    </span>
+
+                </div>
+
+            </div>
+
+            <span class="admin-eyebrow">
+                ADMIN PORTAL
+            </span>
+
+            <h1>
+                Booking Dashboard
+            </h1>
+
+            <p>
+                Manage your mangrove adventures
+                and guest bookings.
+            </p>
+
+        </div>
+
+
+        <div class="admin-actions">
+
+            <div class="admin-user">
+
+                <div class="admin-avatar">
+                    {{
+                    adminEmail.charAt(0).toUpperCase() ||
+                    'A'
+                    }}
+                </div>
+
+                <div>
+
+                    <strong>
+                        {{ adminEmail || 'Administrator' }}
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button type="button" class="refresh-button" (click)="loadBookings()" [disabled]="loading">
+                <span>
+                    ↻
+                </span>
+
+                Refresh
+            </button>
+
+
+            <button type="button" class="logout-button" (click)="logout()">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ERROR -->
+
+    @if (error) {
+
+    <div class="error-banner">
+
+        <span>
+            {{ error }}
+        </span>
+
+        <button type="button" (click)="loadBookings()">
+            Try again
+        </button>
+
+    </div>
+
+    }
+
+
+    <!-- STATS -->
+
+    <section class="stats-grid">
+
+        <article class="stat-card">
+
+            <span class="stat-label">
+                TOTAL BOOKINGS
+            </span>
+
+            <strong>
+                {{ totalBookings }}
+            </strong>
+
+            <span class="stat-note">
+                All time
+            </span>
+
+        </article>
+
+
+        <article class="stat-card stat-blue">
+
+            <span class="stat-label">
+                TODAY
+            </span>
+
+            <strong>
+                {{ todayBookings }}
+            </strong>
+
+            <span class="stat-note">
+                Today's bookings
+            </span>
+
+        </article>
+
+
+        <article class="stat-card stat-green">
+
+            <span class="stat-label">
+                PAID REVENUE
+            </span>
+
+            <strong>
+                {{ formatCurrency(paidRevenue) }}
+            </strong>
+
+            <span class="stat-note">
+                Successful payments
+            </span>
+
+        </article>
+
+
+        <article class="stat-card stat-purple">
+
+            <span class="stat-label">
+                UPCOMING
+            </span>
+
+            <strong>
+                {{ upcomingBookings }}
+            </strong>
+
+            <span class="stat-note">
+                Active upcoming trips
+            </span>
+
+        </article>
+
+    </section>
+
+
+    <!-- STATUS SUMMARY -->
+
+    <section class="summary-grid">
+
+        <div class="summary-item">
+
+            <span class="summary-dot confirmed"></span>
+
+            <div>
+
+                <strong>
+                    {{ confirmedBookings }}
+                </strong>
+
+                <span>
+                    Confirmed
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            <span class="summary-dot pending"></span>
+
+            <div>
+
+                <strong>
+                    {{ pendingBookings }}
+                </strong>
+
+                <span>
+                    Pending
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            <span class="summary-dot cancelled"></span>
+
+            <div>
+
+                <strong>
+                    {{ cancelledBookings }}
+                </strong>
+
+                <span>
+                    Cancelled
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            <span class="summary-dot paid"></span>
+
+            <div>
+
+                <strong>
+                    {{ paidBookings }}
+                </strong>
+
+                <span>
+                    Paid
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-item">
+
+            <span class="summary-dot payment-pending"></span>
+
+            <div>
+
+                <strong>
+                    {{ pendingPayments }}
+                </strong>
+
+                <span>
+                    Payment Pending
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- BOOKINGS -->
+
+    <section class="bookings-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <span class="section-eyebrow">
+                    BOOKINGS
+                </span>
+
+                <h2>
+                    Recent bookings
+                </h2>
+
+            </div>
+
+            <span class="result-count">
+                {{ filteredBookings.length }}
+                results
+            </span>
+
+        </div>
+
+
+        <!-- FILTERS -->
+
+        <div class="filters">
+
+            <div class="search-box">
+
+                <span>
+                    ⌕
+                </span>
+
+                <input type="search" placeholder="Search booking, customer, phone..." [value]="searchTerm" (input)="
+            searchTerm =
+              $any($event.target).value
+          " />
+
+            </div>
+
+
+            <select [value]="bookingStatus" (change)="
+          setBookingStatus(
+            $any($event.target).value
+          )
+        ">
+
+                <option value="ALL">
+                    All booking status
+                </option>
+
+                <option value="CONFIRMED">
+                    Confirmed
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="CANCELLED">
+                    Cancelled
+                </option>
+
+            </select>
+
+
+            <select [value]="paymentStatus" (change)="
+          setPaymentStatus(
+            $any($event.target).value
+          )
+        ">
+
+                <option value="ALL">
+                    All payments
+                </option>
+
+                <option value="PAID">
+                    Paid
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="FAILED">
+                    Failed
+                </option>
+
+                <option value="REFUNDED">
+                    Refunded
+                </option>
+
+            </select>
+
+
+            @if (
+            searchTerm ||
+            bookingStatus !== 'ALL' ||
+            paymentStatus !== 'ALL'
+            ) {
+
+            <button type="button" class="clear-button" (click)="clearFilters()">
+                Clear
+            </button>
+
+            }
+
+        </div>
+
+
+        <!-- LOADING -->
+
+        @if (loading) {
+
+        <div class="table-state">
+
+            <div class="spinner"></div>
+
+            <span>
+                Loading bookings...
+            </span>
+
+        </div>
+
+        }
+
+
+        <!-- EMPTY -->
+
+        @else if (
+        filteredBookings.length === 0
+        ) {
+
+        <div class="table-state empty">
+
+            <div class="empty-icon">
+                ◌
+            </div>
+
+            <strong>
+                No bookings found
+            </strong>
+
+            <span>
+                Try changing your filters.
+            </span>
+
+        </div>
+
+        }
+
+
+        <!-- TABLE -->
+
+        @else {
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            BOOKING
+                        </th>
+
+                        <th>
+                            CUSTOMER
+                        </th>
+
+                        <th>
+                            EXPERIENCE
+                        </th>
+
+                        <th>
+                            DATE
+                        </th>
+
+                        <th>
+                            AMOUNT
+                        </th>
+
+                        <th>
+                            PAYMENT
+                        </th>
+
+                        <th>
+                            STATUS
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @for (
+                    booking of recentBookings;
+                    track booking.bookingId
+                    ) {
+<tr class="booking-row" (click)="openBooking(booking.bookingId)">
+                        <td>
+
+                            <strong class="booking-id">
+                                {{ booking.bookingId }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="customer">
+
+                                <strong>
+                                    {{ booking.customerName }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.customerPhone }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="experience">
+
+                                <strong>
+                                    {{ booking.packageName }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.quantity }}
+
+                                    {{
+                                    booking.quantity === 1
+                                    ? 'person'
+                                    : 'people'
+                                    }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="date-cell">
+
+                                <strong>
+                                    {{
+                                    formatDate(
+                                    booking.bookingDate
+                                    )
+                                    }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.timeSlot }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <strong class="amount">
+                                {{
+                                formatCurrency(
+                                booking.totalAmount
+                                )
+                                }}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="status payment" [class.paid]="
+                      booking.paymentStatus === 'PAID'
+                    " [class.pending]="
+                      booking.paymentStatus === 'PENDING'
+                    " [class.failed]="
+                      booking.paymentStatus === 'FAILED'
+                    " [class.refunded]="
+                      booking.paymentStatus === 'REFUNDED'
+                    ">
+                                {{ booking.paymentStatus }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="status booking" [class.confirmed]="
+                      booking.bookingStatus === 'CONFIRMED'
+                    " [class.pending]="
+                      booking.bookingStatus === 'PENDING'
+                    " [class.cancelled]="
+                      booking.bookingStatus === 'CANCELLED'
+                    ">
+                                {{ booking.bookingStatus }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        @if (
+        filteredBookings.length > 10
+        ) {
+
+        <div class="table-footer">
+
+            Showing first 10 bookings.
+            Search or filter to find a booking.
+
+        </div>
+
+        }
+
+        }
+
+    </section>
+
+
+    <!-- SECURITY NOTE -->
+
+    <aside class="security-note">
+
+        <span class="security-icon">
+            🔒
+        </span>
+
+        <div>
+
+            <strong>
+                Admin security
+            </strong>
+
+            <p>
+                This dashboard is protected by
+                admin authentication.
+            </p>
+
+        </div>
+
+    </aside>
+
+</main>

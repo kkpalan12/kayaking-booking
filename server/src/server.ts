@@ -12,7 +12,7 @@ import bookingRoutes from "./routes/booking.routes";
 
 import paymentRoutes from "./routes/payment.routes";
 
-import googleReviewsRoutes from "./routes/google-reviews.routes";
+import adminAuthRoutes from "./routes/admin-auth.routes";
 
 dotenv.config();
 
@@ -71,6 +71,8 @@ app.use("/api/bookings", bookingRoutes);
  * Payments
  */
 app.use("/api/payments", paymentRoutes);
+
+app.use("/api/admin/auth", adminAuthRoutes);
 
 /**
  * 404

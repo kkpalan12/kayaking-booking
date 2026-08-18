@@ -1,80 +1,71 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 
-import * as paymentService from "../services/payment.service";
+import { handlePaymentWebhook } from "../services/payment.service";
 
 export async function createPaymentLink(
   req: Request,
   res: Response,
-): Promise<void> {
+  next: NextFunction,
+) {
   try {
-    const bookingId =
-      typeof req.params.bookingId === "string"
-        ? req.params.bookingId
-        : undefined;
+    const bookingId = String(req.params.bookingId);
 
-    if (!bookingId) {
-      res.status(400).json({
-        success: false,
-        message: "Booking ID is required",
-      });
+    const data = await import("../services/payment.service").then((service) =>
+      service.createPaymentLink(bookingId),
+    );
 
-      return;
-    }
-
-    const data = await paymentService.createPaymentLink(bookingId);
-
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data,
     });
-  } catch (error: any) {
-    console.error("Create payment link error:", error);
-
-    res.status(400).json({
-      success: false,
-      message: error?.message || "Unable to create payment link",
-    });
+  } catch (error) {
+    next(error);
   }
 }
 
 export async function paymentWebhook(
   req: Request,
   res: Response,
-): Promise<void> {
+  next: NextFunction,
+) {
   try {
-    const signature = req.headers["x-razorpay-signature"];
+    console.log("====================================");
 
-    if (typeof signature !== "string") {
+    console.log("RAZORPAY WEBHOOK RECEIVED");
+
+    console.log("Time:", new Date().toISOString());
+
+    console.log("Signature:", req.headers["x-razorpay-signature"]);
+
+    const rawBody = Buffer.isBuffer(req.body)
+      ? req.body.toString("utf8")
+      : String(req.body);
+
+    console.log("Webhook body:", rawBody);
+
+    const signature = String(req.headers["x-razorpay-signature"] || "");
+
+    if (!signature) {
       res.status(400).json({
         success: false,
-        message: "Missing Razorpay signature",
+        message: "Missing Razorpay webhook signature",
       });
 
       return;
     }
 
-    if (!Buffer.isBuffer(req.body)) {
-      res.status(400).json({
-        success: false,
-        message: "Invalid webhook body",
-      });
+    await handlePaymentWebhook(rawBody, signature);
 
-      return;
-    }
+    console.log("RAZORPAY WEBHOOK PROCESSED");
 
-    const rawBody = req.body.toString("utf8");
-
-    await paymentService.handlePaymentWebhook(rawBody, signature);
+    console.log("====================================");
 
     res.status(200).json({
       success: true,
     });
-  } catch (error: any) {
-    console.error("Razorpay webhook error:", error);
+  } catch (error) {
+    console.error("RAZORPAY WEBHOOK ERROR:", error);
 
-    res.status(400).json({
-      success: false,
-      message: error?.message || "Webhook verification failed",
-    });
+    next(error);
   }
 }
