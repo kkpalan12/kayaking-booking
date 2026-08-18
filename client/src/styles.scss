@@ -1,1 +1,509 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================================
+   RIVER EDGE
+   GLOBAL DESIGN SYSTEM
+   Apple-inspired + water/adventure aesthetic
+========================================================= */
+
+:root {
+    --font-system:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    --font-display: var(--font-system);
+
+    --color-primary: #1687a0;
+    --color-primary-dark: #086d82;
+    --color-primary-deep: #075b6d;
+
+    --color-primary-soft: #e8f7f9;
+    --color-primary-softer: #f3fbfc;
+
+    --color-text: #123f4d;
+    --color-text-secondary: #66828c;
+    --color-text-muted: #8da2a9;
+    --color-text-light: #a5b5b9;
+
+    --color-white: #ffffff;
+    --color-background: #f5fbfc;
+    --color-surface: #ffffff;
+    --color-surface-soft: #f8fcfd;
+
+    --color-border: #dcecef;
+    --color-border-light: #eaf2f4;
+
+    --color-success: #19825e;
+    --color-success-soft: #e9f8f1;
+
+    --color-error: #c25757;
+    --color-error-soft: #fff5f5;
+
+    --color-warning: #f5a623;
+
+    --radius-xs: 8px;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --radius-xxl: 30px;
+
+    --shadow-xs:
+        0 2px 8px rgba(20, 90, 110, .04);
+
+    --shadow-sm:
+        0 5px 18px rgba(20, 90, 110, .06);
+
+    --shadow-md:
+        0 12px 35px rgba(20, 90, 110, .08);
+
+    --shadow-lg:
+        0 20px 55px rgba(20, 90, 110, .10);
+
+    --container-width: 1100px;
+
+    --transition-fast: 150ms ease;
+    --transition: 220ms ease;
+    --transition-slow: 350ms ease;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+
+    min-width: 320px;
+    min-height: 100vh;
+
+    font-family: var(--font-system);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+
+    color: var(--color-text);
+    background: var(--color-background);
+
+    text-rendering: optimizeLegibility;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    font-synthesis: none;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin-top: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    color: var(--color-text);
+    font-weight: 600;
+
+    letter-spacing: -.035em;
+    line-height: 1.08;
+
+    text-wrap: balance;
+}
+
+h1 {
+    font-size: clamp(42px, 6vw, 76px);
+    letter-spacing: -.055em;
+}
+
+h2 {
+    font-size: clamp(32px, 4.5vw, 54px);
+    letter-spacing: -.045em;
+}
+
+h3 {
+    font-size: 22px;
+    letter-spacing: -.025em;
+}
+
+h4 {
+    font-size: 18px;
+}
+
+p {
+    color: var(--color-text-secondary);
+    font-weight: 400;
+    line-height: 1.65;
+}
+
+strong,
+b {
+    font-weight: 600;
+}
+
+small {
+    font-size: 12px;
+}
+
+em {
+    font-style: italic;
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:focus-visible {
+    outline:
+        3px solid rgba(22, 135, 160, .25);
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+button {
+    font-family: var(--font-system);
+    font-weight: 600;
+
+    border: 0;
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+button:focus-visible {
+    outline:
+        3px solid rgba(22, 135, 160, .25);
+
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+input,
+textarea,
+select {
+    font-family: var(--font-system);
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-text-light);
+    opacity: 1;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+
+/* =========================================================
+   SELECTION
+========================================================= */
+
+::selection {
+    background: #bde9ef;
+    color: #123f4d;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f8f9;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #b8d9de;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8fc5cd;
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container {
+    width:
+        min(var(--container-width),
+            calc(100% - 40px));
+
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   EYEBROW
+========================================================= */
+
+.eyebrow {
+    display: block;
+
+    color: var(--color-primary);
+
+    font-family: var(--font-system);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: .16em;
+    line-height: 1.2;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   GLOBAL BUTTONS
+========================================================= */
+
+.primary-button {
+    min-height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+    padding: 0 18px;
+
+    border-radius: var(--radius-md);
+
+    background:
+        linear-gradient(135deg,
+            var(--color-primary),
+            var(--color-primary-dark));
+
+    color: var(--color-white);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        filter var(--transition);
+}
+
+.primary-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(1.03);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+
+.secondary-button {
+    min-height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 9px;
+    padding: 0 17px;
+
+    border:
+        1px solid var(--color-border);
+
+    border-radius: var(--radius-md);
+
+    background: var(--color-white);
+    color: var(--color-text);
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+.secondary-button:hover {
+    background: var(--color-primary-softer);
+
+    border-color: #b9dfe5;
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   GLOBAL CARD
+========================================================= */
+
+.surface-card {
+    border:
+        1px solid var(--color-border);
+
+    border-radius:
+        var(--radius-xl);
+
+    background:
+        var(--color-surface);
+
+    box-shadow:
+        var(--shadow-md);
+}
+
+
+/* =========================================================
+   GLOBAL FORM FIELD
+========================================================= */
+
+.field-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #476b76;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.field-input {
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 0 14px;
+
+    border:
+        1px solid var(--color-border);
+
+    border-radius:
+        var(--radius-md);
+
+    background:
+        var(--color-surface-soft);
+
+    color:
+        var(--color-text);
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+}
+
+.field-input:hover {
+    border-color: #c5e1e6;
+}
+
+.field-input:focus {
+    border-color: #59b5c4;
+
+    background: var(--color-white);
+
+    box-shadow:
+        0 0 0 3px rgba(55, 167, 186, .10);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    .container {
+        width:
+            calc(100% - 24px);
+    }
+
+    h1 {
+        font-size: 44px;
+    }
+
+    h2 {
+        font-size: 36px;
+    }
+
+    h3 {
+        font-size: 20px;
+    }
+}

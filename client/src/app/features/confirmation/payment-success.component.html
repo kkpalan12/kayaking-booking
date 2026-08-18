@@ -1,45 +1,131 @@
 <main class="success-page">
 
-    <div class="success-card">
+    <section class="success-card">
 
-        <div class="success-icon">
+        <!-- SUCCESS ICON -->
+        <div class="success-icon" aria-hidden="true">
             ✓
         </div>
 
-        <span class="eyebrow">
+
+        <!-- BRAND -->
+        <div class="success-brand">
+
+            <div class="success-brand-mark">
+                R
+            </div>
+
+            <div class="success-brand-text">
+
+                <strong>
+                    RIVER EDGE
+                </strong>
+
+                <span>
+                    MANGROVE KAYAKING &amp; ADVENTURE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- EYEBROW -->
+        <span class="success-eyebrow">
             PAYMENT RECEIVED
         </span>
 
+
+        <!-- TITLE -->
         <h1>
             You're all set!
         </h1>
 
-        <p>
-            Your mangrove adventure is almost ready.
-            We have received your payment.
+
+        <!-- DESCRIPTION -->
+        <p class="success-description">
+            Your mangrove adventure is booked.
+            We've received your payment and your
+            adventure is now waiting for you.
         </p>
 
+
+        <!-- BOOKING REFERENCE -->
         @if (bookingId) {
+
         <div class="booking-reference">
-            <span>Booking ID</span>
-            <strong>{{ bookingId }}</strong>
+
+            <span>
+                BOOKING ID
+            </span>
+
+            <strong>
+                {{ bookingId }}
+            </strong>
+
         </div>
+
         }
 
-        <div class="next-box">
-            <strong>What's next?</strong>
 
-            <p>
-                We'll confirm your booking and contact
-                you on WhatsApp with the details.
-            </p>
+        <!-- WHAT'S NEXT -->
+        <div class="next-box">
+
+            <div class="next-icon">
+                💬
+            </div>
+
+            <div class="next-content">
+
+                <strong>
+                    What's next?
+                </strong>
+
+                <p>
+                    We'll confirm your booking and send
+                    the details to your WhatsApp number.
+                </p>
+
+            </div>
+
         </div>
 
+
+        <!-- ADVENTURE MESSAGE -->
+        <div class="adventure-message">
+
+            <span class="adventure-icon">
+                🛶
+            </span>
+
+            <p>
+                Get ready to paddle, explore and
+                experience the mangroves.
+            </p>
+
+        </div>
+
+
+        <!-- HOME BUTTON -->
         <a routerLink="/" class="home-button">
-            Back to home
-            <span>→</span>
+
+            <span class="home-button-text">
+                Back to River Edge
+            </span>
+
+            <span class="home-button-arrow">
+                →
+            </span>
+
         </a>
 
-    </div>
+
+        <!-- FOOTER -->
+        <p class="success-footer">
+            Thank you for choosing
+            River Edge Mangrove Kayaking &amp; Adventure.
+        </p>
+
+    </section>
 
 </main>

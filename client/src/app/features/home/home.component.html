@@ -1,41 +1,104 @@
 <main class="home">
 
-    <section class="hero">
+    <!-- =====================================================
+       HERO
+       ===================================================== -->
+
+    <section class="hero" [ngStyle]="heroStyle">
 
         <div class="hero-overlay"></div>
 
         <div class="hero-content">
 
-            <span class="eyebrow">
-                MANGROVE ADVENTURES
+            <!-- BRAND -->
+
+            <div class="hero-brand">
+
+                <div class="hero-brand-mark">
+                    R
+                </div>
+
+                <div class="hero-brand-text">
+
+                    <span class="hero-brand-name">
+                        River Edge
+                    </span>
+
+                    <span class="hero-brand-subtitle">
+                        Mangrove Kayaking & Adventure
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- EYEBROW -->
+
+            <span class="hero-eyebrow">
+                Kayak · Explore · Escape
             </span>
 
+
+            <!-- TITLE -->
+
             <h1>
-                Paddle into<br />
-                nature.
+                Paddle into
+                <em>nature.</em>
             </h1>
+
+
+            <!-- DESCRIPTION -->
 
             <p>
                 Explore peaceful mangrove waters,
-                one unforgettable experience at a time.
+                unforgettable adventures and moments
+                worth taking home.
             </p>
 
-            <a class="hero-button" href="#experiences">
-                Explore Experiences
-                <span>↓</span>
+
+            <!-- CTA -->
+
+            <a class="hero-button" href="#experiences" (click)="$event.preventDefault(); scrollToExperiences()">
+                <span class="hero-button-text">
+                    Explore Experiences
+                </span>
+
+                <span class="hero-button-arrow">
+                    ↓
+                </span>
             </a>
+
+        </div>
+
+
+        <!-- HERO BOTTOM -->
+
+        <div class="hero-bottom">
+
+            <span>
+                River Edge · Mangrove Adventure
+            </span>
+
+            <span>
+                Scroll to explore ↓
+            </span>
 
         </div>
 
     </section>
 
 
+    <!-- =====================================================
+       EXPERIENCES
+       ===================================================== -->
+
     <section id="experiences" class="experiences">
 
         <div class="section-heading">
 
             <span class="eyebrow">
-                OUR EXPERIENCES
+                Our Experiences
             </span>
 
             <h2>
@@ -49,13 +112,34 @@
         </div>
 
 
+        <!-- LOADING -->
+
         @if (loading) {
 
         <div class="loading">
             Loading experiences...
         </div>
 
-        } @else {
+        }
+
+
+        <!-- ERROR -->
+
+        @else if (error) {
+
+        <div class="loading">
+            Unable to load experiences.
+            Please try again.
+        </div>
+
+        }
+
+
+        <!-- PACKAGES -->
+
+        @else {
+
+        @if (packages.length > 0) {
 
         <div class="package-list">
 
@@ -66,32 +150,38 @@
 
             <article class="package-card">
 
+
+                <!-- PACKAGE IMAGE -->
+
                 <div class="package-image">
 
                     @if (package.image) {
 
-                    <img [src]="package.image" [alt]="package.name" />
+                    <img [src]="package.image" [alt]="package.name" loading="lazy" />
 
                     } @else {
 
                     <div class="image-placeholder">
+
                         <span>
-                            {{ package.pricingType ===
-                            'PER_PERSON'
-                            ? '🌿'
-                            : '❤️'
+                            {{
+                            package.pricingType === 'PER_PERSON'
+                            ? '🛶'
+                            : '🌿'
                             }}
                         </span>
+
                     </div>
 
                     }
 
-                    @if (
-                    package.discount.enabled
-                    ) {
+
+                    <!-- DISCOUNT -->
+
+                    @if (hasDiscount(package)) {
 
                     <span class="discount-badge">
-                        OFFER
+                        {{ getDiscountText(package) }}
                     </span>
 
                     }
@@ -99,7 +189,12 @@
                 </div>
 
 
+                <!-- PACKAGE CONTENT -->
+
                 <div class="package-content">
+
+
+                    <!-- TOP -->
 
                     <div class="package-top">
 
@@ -119,25 +214,42 @@
 
                         </div>
 
+
+                        <!-- PRICE -->
+
                         <div class="price">
+
+                            @if (hasDiscount(package)) {
+
+                            <strong>
+                                ₹{{ getDiscountedPrice(package) }}
+                            </strong>
+
+                            <span style="
+                          text-decoration: line-through;
+                          opacity: 0.55;
+                        ">
+                                ₹{{ package.price }}
+                            </span>
+
+                            } @else {
 
                             <strong>
                                 ₹{{ package.price }}
                             </strong>
 
                             <span>
-                                {{
-                                package.pricingType ===
-                                'PER_PERSON'
-                                ? '/ person'
-                                : '/ booking'
-                                }}
+                                {{ getPricingLabel(package) }}
                             </span>
+
+                            }
 
                         </div>
 
                     </div>
 
+
+                    <!-- DESCRIPTION -->
 
                     @if (package.description) {
 
@@ -148,30 +260,29 @@
                     }
 
 
-                    @if (
-                    package.discount.enabled
-                    ) {
+                    <!-- OFFER -->
+
+                    @if (hasDiscount(package)) {
 
                     <div class="offer">
-
-                        {{
-                        package.discount.type ===
-                        'PERCENTAGE'
-                        ? package.discount.value +
-                        '% OFF'
-                        : '₹' +
-                        package.discount.value +
-                        ' OFF'
-                        }}
-
+                        {{ getDiscountText(package) }}
                     </div>
 
                     }
 
 
+                    <!-- BOOK -->
+
                     <button type="button" class="book-button" (click)="bookNow(package)">
-                        Book Now
-                        <span>→</span>
+
+                        <span>
+                            Book Now
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
                     </button>
 
                 </div>
@@ -182,15 +293,234 @@
 
         </div>
 
+        } @else {
+
+        <div class="loading">
+            No experiences are currently available.
+        </div>
+
+        }
+
         }
 
     </section>
 
 
+    <!-- =====================================================
+       REVIEWS
+       ===================================================== -->
+
+    <section class="reviews-section">
+
+        <div class="reviews-container">
+
+            <div class="reviews-heading">
+
+                <span class="eyebrow">
+                    Guest Experiences
+                </span>
+
+                <h2>
+                    Loved by adventurers.
+                </h2>
+
+            </div>
+
+
+            <div class="reviews-grid">
+
+                <!-- REVIEW 1 -->
+
+                <article class="review-card">
+
+                    <div class="review-stars">
+                        ★★★★★
+                    </div>
+
+                    <p>
+                        A beautiful experience through the mangroves.
+                        Peaceful waters, friendly service and an
+                        unforgettable adventure.
+                    </p>
+
+                    <div class="review-author">
+                        Google Guest
+                    </div>
+
+                </article>
+
+
+                <!-- REVIEW 2 -->
+
+                <article class="review-card">
+
+                    <div class="review-stars">
+                        ★★★★★
+                    </div>
+
+                    <p>
+                        Wonderful kayaking experience.
+                        Everything was well organised and the
+                        surroundings were absolutely beautiful.
+                    </p>
+
+                    <div class="review-author">
+                        Google Guest
+                    </div>
+
+                </article>
+
+
+                <!-- REVIEW 3 -->
+
+                <article class="review-card">
+
+                    <div class="review-stars">
+                        ★★★★★
+                    </div>
+
+                    <p>
+                        One of the most peaceful adventures.
+                        Highly recommended for anyone who wants
+                        to explore the mangroves.
+                    </p>
+
+                    <div class="review-author">
+                        Google Guest
+                    </div>
+
+                </article>
+
+
+                <!-- REVIEW 4 -->
+
+                <article class="review-card">
+
+                    <div class="review-stars">
+                        ★★★★★
+                    </div>
+
+                    <p>
+                        Great experience from start to finish.
+                        Beautiful location and a memorable
+                        kayaking trip.
+                    </p>
+
+                    <div class="review-author">
+                        Google Guest
+                    </div>
+
+                </article>
+
+
+                <!-- REVIEW 5 -->
+
+                <article class="review-card">
+
+                    <div class="review-stars">
+                        ★★★★★
+                    </div>
+
+                    <p>
+                        A fantastic way to spend time surrounded
+                        by nature. Calm water, beautiful mangroves
+                        and a great adventure.
+                    </p>
+
+                    <div class="review-author">
+                        Google Guest
+                    </div>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+       LOCATION
+       ===================================================== -->
+
+    <section class="location-section">
+
+        <div class="location-container">
+
+
+            <!-- LOCATION CONTENT -->
+
+            <div class="location-content">
+
+                <span class="eyebrow">
+                    Find Us
+                </span>
+
+                <h2>
+                    Meet us by<br />
+                    the river.
+                </h2>
+
+                <p>
+                    Ready to paddle through the mangroves?
+                    Find River Edge Mangrove Kayaking &
+                    Adventure and start your journey.
+                </p>
+
+
+                <a class="location-button" href="https://share.google/Rp6uMPSE3NUKZHxOR" target="_blank"
+                    rel="noopener noreferrer">
+                    Get Directions
+
+                    <span>
+                        ↗
+                    </span>
+                </a>
+
+            </div>
+
+
+            <!-- LOCATION VISUAL -->
+
+            <div class="location-map">
+
+                <div style="
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+          ">
+
+                    River Edge
+                    <br />
+
+                    Mangrove Kayaking & Adventure
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
     <footer class="footer">
 
         <span>
-            🌿 Mangrove Adventures
+            River Edge · Mangrove Adventure
         </span>
 
         <small>

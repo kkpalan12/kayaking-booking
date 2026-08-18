@@ -2,11 +2,14 @@
 
     @if (loading) {
 
-    <div class="loading">
-        Loading experience...
+    <div class="loading-screen">
+        <div class="loader"></div>
+        <p>Preparing your adventure...</p>
     </div>
 
     } @else {
+
+    <!-- HEADER -->
 
     <header class="booking-header">
 
@@ -14,219 +17,515 @@
             ←
         </button>
 
-        <div>
+        <div class="header-copy">
+
             <span class="eyebrow">
-                BOOK YOUR EXPERIENCE
+                RIVER EDGE · BOOKING
             </span>
 
             <h1>
-                {{ packageData.name }}
+                Reserve your
+                <em>adventure.</em>
             </h1>
+
         </div>
 
     </header>
 
 
-    <section class="booking-card">
+    <!-- MAIN -->
 
-        <div class="experience-summary">
+    <div class="booking-layout">
 
-            <div class="experience-icon">
-                🌿
-            </div>
+        <!-- EXPERIENCE -->
 
-            <div>
-                <strong>
-                    {{ packageData.name }}
-                </strong>
+        <aside class="experience-panel">
 
-                <span>
-                    ₹{{ packageData.price }}
-                    {{
-                    packageData.pricingType ===
-                    'PER_PERSON'
-                    ? ' / person'
-                    : ' / booking'
-                    }}
-                </span>
-            </div>
+            <div class="experience-image">
 
-        </div>
+                @if (packageData.image) {
 
-
-        <form [formGroup]="bookingForm" (ngSubmit)="payNow()">
-
-            <!-- DATE -->
-
-            <section class="form-section">
-
-                <label>
-                    📅 Date
-                </label>
-
-                <input type="date" formControlName="bookingDate" [min]="minDate" />
-
-            </section>
-
-
-            <!-- TIME -->
-
-            <section class="form-section">
-
-                <label>
-                    🕐 Time
-                </label>
-
-                <div class="time-grid">
-
-                    @for (
-                    slot of timeSlots;
-                    track slot
-                    ) {
-
-                    <button type="button" class="time-option" [class.selected]="
-                  bookingForm.controls.timeSlot.value
-                    === slot
-                " (click)="
-                  bookingForm.controls.timeSlot
-                    .setValue(slot)
-                ">
-                        {{ slot }}
-                    </button>
-
-                    }
-
-                </div>
-
-            </section>
-
-
-            <!-- PEOPLE -->
-
-            @if (
-            packageData.pricingType ===
-            'PER_PERSON'
-            ) {
-
-            <section class="form-section">
-
-                <label>
-                    👥 People
-                </label>
-
-                <div class="quantity-control">
-
-                    <button type="button" (click)="decreaseQuantity()">
-                        −
-                    </button>
-
-                    <strong>
-                        {{ quantity }}
-                    </strong>
-
-                    <button type="button" (click)="increaseQuantity()">
-                        +
-                    </button>
-
-                </div>
-
-            </section>
-
-            }
-
-
-            <!-- CUSTOMER -->
-
-            <section class="form-section">
-
-                <label>
-                    Your details
-                </label>
-
-                <input type="text" placeholder="Your name" formControlName="customerName" autocomplete="name" />
-
-                <input type="tel" placeholder="WhatsApp number" formControlName="customerPhone" maxlength="10"
-                    inputmode="numeric" autocomplete="tel" />
-
-                @if (
-                bookingForm.controls.customerPhone
-                .invalid &&
-                bookingForm.controls.customerPhone.touched
-                ) {
-
-                <small class="field-error">
-                    Enter a valid 10-digit mobile number.
-                </small>
-
-                }
-
-            </section>
-
-
-            <!-- PRICE -->
-
-            <section class="price-summary">
-
-                <div>
-                    <span>Subtotal</span>
-                    <strong>₹{{ subtotal }}</strong>
-                </div>
-
-                @if (discountAmount > 0) {
-
-                <div class="discount-row">
-                    <span>Discount</span>
-
-                    <strong>
-                        − ₹{{ discountAmount }}
-                    </strong>
-                </div>
-
-                }
-
-                <div class="total-row">
-                    <span>Total</span>
-
-                    <strong>
-                        ₹{{ total }}
-                    </strong>
-                </div>
-
-            </section>
-
-
-            @if (errorMessage) {
-
-            <div class="error-message">
-                {{ errorMessage }}
-            </div>
-
-            }
-
-
-            <button type="submit" class="pay-button" [disabled]="submitting">
-
-                @if (submitting) {
-
-                Creating payment...
+                <img [src]="packageData.image" [alt]="packageData.name" />
 
                 } @else {
 
-                Pay ₹{{ total }}
-                <span>→</span>
+                <div class="image-placeholder">
+                    🛶
+                </div>
 
                 }
 
-            </button>
+                <div class="image-overlay"></div>
+
+                <span class="experience-label">
+                    RIVER EDGE
+                </span>
+
+            </div>
 
 
-            <p class="secure-note">
-                🔒 Secure payment powered by Razorpay
-            </p>
+            <div class="experience-info">
 
-        </form>
+                <span class="small-label">
+                    YOUR EXPERIENCE
+                </span>
 
-    </section>
+                <h2>
+                    {{ packageData.name }}
+                </h2>
+
+
+                @if (packageData.description) {
+
+                <p class="experience-description">
+                    {{ packageData.description }}
+                </p>
+
+                }
+
+
+                <div class="experience-details">
+
+                    @if (packageData.duration) {
+
+                    <div class="detail-item">
+
+                        <span>
+                            Duration
+                        </span>
+
+                        <strong>
+                            {{ packageData.duration }}
+                        </strong>
+
+                    </div>
+
+                    }
+
+
+                    <div class="detail-item">
+
+                        <span>
+                            Pricing
+                        </span>
+
+                        <strong>
+                            {{
+                            packageData.pricingType === 'PER_PERSON'
+                            ? 'Per person'
+                            : 'Private booking'
+                            }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOCATION -->
+
+                <div class="location-card">
+
+                    <div class="location-icon">
+                        📍
+                    </div>
+
+                    <div class="location-copy">
+
+                        <strong>
+                            Find us
+                        </strong>
+
+                        <span>
+                            River Edge Mangrove Kayaking &amp; Adventure
+                        </span>
+
+                    </div>
+
+                    <a href="https://share.google/Rp6uMPSE3NUKZHxOR" target="_blank" rel="noopener noreferrer"
+                        class="location-button">
+                        Directions
+                        <span>↗</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+
+        <!-- BOOKING FORM -->
+
+        <section class="booking-card">
+
+            <form [formGroup]="bookingForm" (ngSubmit)="payNow()">
+
+                <!-- DATE -->
+
+                <section class="form-section">
+
+                    <div class="section-title">
+
+                        <span class="step-number">
+                            01
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Choose your date
+                            </strong>
+
+                            <small>
+                                When would you like to paddle?
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="date-field">
+
+                        <span class="field-icon">
+                            📅
+                        </span>
+
+                        <input type="date" formControlName="bookingDate" [min]="minDate" />
+
+                    </div>
+
+                </section>
+
+
+                <!-- TIME -->
+
+                <section class="form-section">
+
+                    <div class="section-title">
+
+                        <span class="step-number">
+                            02
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Choose your time
+                            </strong>
+
+                            <small>
+                                Select your preferred slot
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="time-grid">
+
+                        @for (
+                        slot of timeSlots;
+                        track slot
+                        ) {
+
+                        <button type="button" class="time-option" [class.selected]="
+                                        bookingForm.controls.timeSlot.value === slot
+                                    " (click)="
+                                        bookingForm.controls.timeSlot.setValue(slot)
+                                    ">
+
+                            <span class="time-dot"></span>
+
+                            {{ slot }}
+
+                        </button>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- PEOPLE -->
+
+                @if (packageData.pricingType === 'PER_PERSON') {
+
+                <section class="form-section">
+
+                    <div class="section-title">
+
+                        <span class="step-number">
+                            03
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                How many people?
+                            </strong>
+
+                            <small>
+                                Maximum 50 people
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="quantity-control">
+
+                        <button type="button" (click)="decreaseQuantity()" [disabled]="quantity <= 1"
+                            aria-label="Decrease quantity">
+                            −
+                        </button>
+
+
+                        <div class="quantity-value">
+
+                            <strong>
+                                {{ quantity }}
+                            </strong>
+
+                            <span>
+                                {{
+                                quantity === 1
+                                ? 'person'
+                                : 'people'
+                                }}
+                            </span>
+
+                        </div>
+
+
+                        <button type="button" (click)="increaseQuantity()" [disabled]="quantity >= 50"
+                            aria-label="Increase quantity">
+                            +
+                        </button>
+
+                    </div>
+
+                </section>
+
+                }
+
+
+                <!-- CUSTOMER -->
+
+                <section class="form-section">
+
+                    <div class="section-title">
+
+                        <span class="step-number">
+
+                            {{
+                            packageData.pricingType === 'PER_PERSON'
+                            ? '04'
+                            : '03'
+                            }}
+
+                        </span>
+
+                        <div>
+
+                            <strong>
+                                Your details
+                            </strong>
+
+                            <small>
+                                We'll use these for your booking confirmation
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="customer-fields">
+
+                        <!-- NAME -->
+
+                        <div class="field">
+
+                            <label for="customerName">
+                                Full name
+                            </label>
+
+                            <input id="customerName" type="text" placeholder="Enter your name"
+                                formControlName="customerName" autocomplete="name" />
+
+
+                            @if (
+                            bookingForm.controls.customerName.invalid &&
+                            bookingForm.controls.customerName.touched
+                            ) {
+
+                            <small class="field-error">
+                                Please enter your name.
+                            </small>
+
+                            }
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="field">
+
+                            <label for="customerPhone">
+                                WhatsApp number
+                            </label>
+
+                            <div class="phone-field">
+
+                                <span>
+                                    +91
+                                </span>
+
+                                <input id="customerPhone" type="tel" placeholder="10-digit mobile number"
+                                    formControlName="customerPhone" maxlength="10" inputmode="numeric"
+                                    autocomplete="tel" />
+
+                            </div>
+
+
+                            @if (
+                            bookingForm.controls.customerPhone.invalid &&
+                            bookingForm.controls.customerPhone.touched
+                            ) {
+
+                            <small class="field-error">
+                                Enter a valid 10-digit mobile number.
+                            </small>
+
+                            }
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PRICE -->
+
+                <section class="price-summary">
+
+                    <div class="price-row">
+
+                        <span>
+                            Experience
+                        </span>
+
+                        <strong>
+                            ₹{{ subtotal }}
+                        </strong>
+
+                    </div>
+
+
+                    @if (discountAmount > 0) {
+
+                    <div class="price-row discount-row">
+
+                        <span>
+                            Adventure offer
+                        </span>
+
+                        <strong>
+                            − ₹{{ discountAmount }}
+                        </strong>
+
+                    </div>
+
+                    }
+
+
+                    <div class="total-row">
+
+                        <div>
+
+                            <span>
+                                Total
+                            </span>
+
+                            <small>
+                                Secure booking amount
+                            </small>
+
+                        </div>
+
+                        <strong>
+                            ₹{{ total }}
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ERROR -->
+
+                @if (errorMessage) {
+
+                <div class="error-message" role="alert">
+                    <span>!</span>
+
+                    {{ errorMessage }}
+                </div>
+
+                }
+
+
+                <!-- PAYMENT -->
+
+                <button type="submit" class="pay-button" [disabled]="submitting">
+
+                    @if (submitting) {
+
+                    <span>
+                        Creating your booking...
+                    </span>
+
+                    <span class="button-loader"></span>
+
+                    } @else {
+
+                    <span>
+                        Continue to payment
+                    </span>
+
+                    <strong>
+                        ₹{{ total }} →
+                    </strong>
+
+                    }
+
+                </button>
+
+
+                <div class="payment-trust">
+
+                    <p class="secure-note">
+                        🔒 Secure payment powered by Razorpay
+                    </p>
+
+                    <p class="whatsapp-note">
+                        You'll receive your booking confirmation on WhatsApp.
+                    </p>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
 
     }
 
