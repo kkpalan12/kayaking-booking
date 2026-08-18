@@ -1,0 +1,26 @@
+{
+  "name": "kayaking-booking-server",
+  "version": "1.0.0",
+  "description": "Kayaking booking and payment backend",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "5.2.1",
+    "mongoose": "8.24.2",
+    "razorpay": "^2.9.8",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "5.7.3"
+  }
+}
