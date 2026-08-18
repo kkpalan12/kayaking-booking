@@ -6,18 +6,35 @@ import {
   createPackage,
   updatePackage,
   deletePackage,
+  activatePackage,
 } from "../controllers/package.controller";
+
+import { requireAdmin } from "../middleware/admin-auth.middleware";
 
 const router = Router();
 
+/**
+ * Public customer-facing packages.
+ */
 router.get("/", getPackages);
 
-router.get("/admin/all", getAdminPackages);
+/**
+ * Admin package management.
+ */
+router.get("/admin/all", requireAdmin, getAdminPackages);
 
-router.post("/admin", createPackage);
+router.post("/admin", requireAdmin, createPackage);
 
-router.put("/admin/:id", updatePackage);
+router.put("/admin/:id", requireAdmin, updatePackage);
 
-router.delete("/admin/:id", deletePackage);
+/**
+ * Safe deactivate.
+ */
+router.delete("/admin/:id", requireAdmin, deletePackage);
+
+/**
+ * Reactivate.
+ */
+router.patch("/admin/:id/activate", requireAdmin, activatePackage);
 
 export default router;

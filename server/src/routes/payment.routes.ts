@@ -4,7 +4,9 @@ import express from "express";
 import {
   createPaymentLinkController,
   paymentWebhook,
+  simulateTestFailedPaymentController,
   simulateTestPaymentController,
+  getPublicPaymentStatusController,
 } from "../controllers/payment.controller";
 
 import { requireAdmin } from "../middleware/admin-auth.middleware";
@@ -13,10 +15,6 @@ const router = Router();
 
 /**
  * Razorpay webhook.
- *
- * IMPORTANT:
- * This must remain before express.json()
- * and must receive the raw body.
  */
 router.post(
   "/webhook",
@@ -27,17 +25,26 @@ router.post(
 );
 
 /**
+ * Public payment status.
+ *
+ * Customer confirmation page uses this endpoint.
+ */
+router.get("/status/:bookingId", getPublicPaymentStatusController);
+
+/**
  * Create Razorpay Payment Link.
  */
 router.post("/link/:bookingId", createPaymentLinkController);
 
 /**
  * Development/test-only payment simulation.
- *
- * Admin authentication required.
- *
- * This endpoint does not call Razorpay.
  */
 router.post("/test/:bookingId", requireAdmin, simulateTestPaymentController);
+
+router.post(
+  "/test-failed/:bookingId",
+  requireAdmin,
+  simulateTestFailedPaymentController,
+);
 
 export default router;

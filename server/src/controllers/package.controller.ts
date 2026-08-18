@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
+
 import * as packageService from "../services/package.service";
 
 export async function getPackages(
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) {
@@ -19,7 +20,7 @@ export async function getPackages(
 }
 
 export async function getAdminPackages(
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ) {
@@ -51,6 +52,7 @@ export async function createPackage(
     next(error);
   }
 }
+
 export async function updatePackage(
   req: Request,
   res: Response,
@@ -77,11 +79,30 @@ export async function deletePackage(
   next: NextFunction,
 ) {
   try {
-    await packageService.deletePackage(String(req.params.id));
+    const updated = await packageService.deletePackage(String(req.params.id));
 
     res.json({
       success: true,
-      message: "Package deleted",
+      data: updated,
+      message: "Package deactivated successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function activatePackage(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const updated = await packageService.activatePackage(String(req.params.id));
+
+    res.json({
+      success: true,
+      data: updated,
+      message: "Package activated successfully",
     });
   } catch (error) {
     next(error);
