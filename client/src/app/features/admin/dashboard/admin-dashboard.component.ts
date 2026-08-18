@@ -4,20 +4,23 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { Router } from '@angular/router';
 
-import { BookingService } from '../../core/services/booking.service';
+import { BookingService } from '../../../core/services/booking.service';
 
-import { AdminAuthService } from '../../core/services/admin-auth.service';
+import { AdminAuthService } from '../../../core/services/admin-auth.service';
 
-import { Booking } from '../../core/models/booking.model';
+import { Booking } from '../../../core/models/booking.model';
+import { AdminNavComponent } from '../shared/navigation/admin-nav.component';
 
 type BookingStatus = 'ALL' | 'PENDING' | 'CONFIRMED' | 'CANCELLED';
 
 type PaymentStatus = 'ALL' | 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 
+type DateFilter = 'ALL' | 'TODAY' | 'TOMORROW' | 'THIS_WEEK' | 'CUSTOM';
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AdminNavComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })
@@ -39,6 +42,10 @@ export class AdminDashboardComponent implements OnInit {
   bookingStatus: BookingStatus = 'ALL';
 
   paymentStatus: PaymentStatus = 'ALL';
+
+  dateFilter: DateFilter = 'ALL';
+
+  customDate = '';
 
   adminEmail = '';
 
@@ -85,6 +92,10 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  openBooking(bookingId: string): void {
+    this.router.navigate(['/admin/bookings', bookingId]);
+  }
+
   logout(): void {
     this.adminAuthService.logout().subscribe({
       next: () => {
@@ -118,7 +129,14 @@ export class AdminDashboardComponent implements OnInit {
         this.paymentStatus === 'ALL' ||
         booking.paymentStatus === this.paymentStatus;
 
-      return matchesSearch && matchesBookingStatus && matchesPaymentStatus;
+      const matchesDate = this.matchesDateFilter(new Date(booking.bookingDate));
+
+      return (
+        matchesSearch &&
+        matchesBookingStatus &&
+        matchesPaymentStatus &&
+        matchesDate
+      );
     });
   }
 
@@ -162,10 +180,10 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get todayBookings(): number {
-    const today = this.dateKey(new Date());
-
     return this.bookings.filter(
-      (booking) => this.dateKey(new Date(booking.bookingDate)) === today,
+      (booking) =>
+        this.dateKey(new Date(booking.bookingDate)) ===
+        this.dateKey(new Date()),
     ).length;
   }
 
@@ -191,12 +209,100 @@ export class AdminDashboardComponent implements OnInit {
     this.paymentStatus = status as PaymentStatus;
   }
 
+  setDateFilter(filter: string): void {
+    this.dateFilter = filter as DateFilter;
+
+    if (this.dateFilter !== 'CUSTOM') {
+      this.customDate = '';
+    }
+  }
+
+  setCustomDate(value: string): void {
+    this.customDate = value;
+
+    this.dateFilter = 'CUSTOM';
+  }
+
   clearFilters(): void {
     this.searchTerm = '';
 
     this.bookingStatus = 'ALL';
 
     this.paymentStatus = 'ALL';
+
+    this.dateFilter = 'ALL';
+
+    this.customDate = '';
+  }
+
+  exportCsv(): void {
+    const rows = this.filteredBookings;
+
+    if (!rows.length) {
+      return;
+    }
+
+    const headers = [
+      'Booking ID',
+      'Customer',
+      'Phone',
+      'Package',
+      'Date',
+      'Time',
+      'Quantity',
+      'Pricing Type',
+      'Unit Price',
+      'Subtotal',
+      'Discount',
+      'Total',
+      'Payment Status',
+      'Booking Status',
+      'Created At',
+    ];
+
+    const csvRows = rows.map((booking) => [
+      booking.bookingId,
+      booking.customerName,
+      booking.customerPhone,
+      booking.packageName,
+      this.formatDateForCsv(booking.bookingDate),
+      booking.timeSlot,
+      booking.quantity,
+      booking.pricingType,
+      booking.unitPrice,
+      booking.subtotal,
+      booking.discountAmount,
+      booking.totalAmount,
+      booking.paymentStatus,
+      booking.bookingStatus,
+      this.formatDateTimeForCsv(booking.createdAt),
+    ]);
+
+    const csv = [headers, ...csvRows]
+      .map((row) => row.map((value) => this.csvEscape(value)).join(','))
+      .join('\r\n');
+
+    const blob = new Blob([csv], {
+      type: 'text/csv;charset=utf-8;',
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+
+    const stamp = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+
+    link.download = `river-edge-bookings-${stamp}.csv`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
   }
 
   formatDate(value: string | Date): string {
@@ -215,12 +321,64 @@ export class AdminDashboardComponent implements OnInit {
     }).format(value);
   }
 
+  private matchesDateFilter(bookingDate: Date): boolean {
+    switch (this.dateFilter) {
+      case 'TODAY':
+        return this.dateKey(bookingDate) === this.dateKey(new Date());
+
+      case 'TOMORROW':
+        return (
+          this.dateKey(bookingDate) ===
+          this.dateKey(this.addDays(new Date(), 1))
+        );
+
+      case 'THIS_WEEK': {
+        const start = this.startOfToday();
+
+        const day = start.getDay();
+
+        const diff = day === 0 ? -6 : 1 - day;
+
+        const monday = this.addDays(start, diff);
+
+        const sunday = this.addDays(monday, 6);
+
+        return bookingDate >= monday && bookingDate <= this.endOfDay(sunday);
+      }
+
+      case 'CUSTOM':
+        return (
+          !!this.customDate && this.dateKey(bookingDate) === this.customDate
+        );
+
+      case 'ALL':
+      default:
+        return true;
+    }
+  }
+
   private startOfToday(): Date {
     const date = new Date();
 
     date.setHours(0, 0, 0, 0);
 
     return date;
+  }
+
+  private endOfDay(date: Date): Date {
+    const result = new Date(date);
+
+    result.setHours(23, 59, 59, 999);
+
+    return result;
+  }
+
+  private addDays(date: Date, days: number): Date {
+    const result = new Date(date);
+
+    result.setDate(result.getDate() + days);
+
+    return result;
   }
 
   private dateKey(date: Date): string {
@@ -232,7 +390,28 @@ export class AdminDashboardComponent implements OnInit {
       String(date.getDate()).padStart(2, '0'),
     ].join('-');
   }
-  openBooking(bookingId: string): void {
-    this.router.navigate(['/admin/bookings', bookingId]);
+
+  private formatDateForCsv(value: string | Date): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(new Date(value));
+  }
+
+  private formatDateTimeForCsv(value: string | Date): string {
+    return new Intl.DateTimeFormat('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(value));
+  }
+
+  private csvEscape(value: unknown): string {
+    const text = String(value ?? '');
+
+    return `"${text.replace(/"/g, '""')}"`;
   }
 }

@@ -75,6 +75,14 @@ export class BookingService {
       .pipe(map((response) => response.data));
   }
 
+  getBookingById(bookingId: string): Observable<Booking> {
+    return this.http
+      .get<
+        ApiResponse<Booking>
+      >(`${this.apiUrl}/payments/status/${encodeURIComponent(bookingId)}`)
+      .pipe(map((response) => response.data));
+  }
+
   /**
    * Update booking status.
    *
@@ -94,6 +102,40 @@ export class BookingService {
         {
           status,
         },
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(map((response) => response.data));
+  }
+
+  retryPayment(bookingId: string): Observable<PaymentLink> {
+    return this.http
+      .post<ApiResponse<PaymentLink>>(
+        `${environment.apiUrl}/payments/link/${encodeURIComponent(bookingId)}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(map((response) => response.data));
+  }
+  simulateTestFailedPayment(bookingId: string): Observable<Booking> {
+    return this.http
+      .post<ApiResponse<Booking>>(
+        `${environment.apiUrl}/payments/test-failed/${encodeURIComponent(bookingId)}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(map((response) => response.data));
+  }
+  simulateTestPayment(bookingId: string): Observable<Booking> {
+    return this.http
+      .post<ApiResponse<Booking>>(
+        `${environment.apiUrl}/payments/test/${encodeURIComponent(bookingId)}`,
+        {},
         {
           withCredentials: true,
         },

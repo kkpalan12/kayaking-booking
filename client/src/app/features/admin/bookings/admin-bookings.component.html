@@ -1,0 +1,410 @@
+<app-admin-nav></app-admin-nav>
+
+<main class="admin-bookings-page">
+
+    <header class="page-header">
+
+        <div>
+
+            <span class="eyebrow">
+                ADMIN · BOOKINGS
+            </span>
+
+            <h1>
+                All bookings
+            </h1>
+
+            <p>
+                Search, filter and manage every River Edge booking.
+            </p>
+
+        </div>
+
+        <button type="button" class="refresh-button" (click)="loadBookings()" [disabled]="loading">
+            ↻ Refresh
+        </button>
+
+    </header>
+
+
+    @if (error) {
+
+    <div class="error-banner">
+        <span>{{ error }}</span>
+
+        <button type="button" (click)="loadBookings()">
+            Try again
+        </button>
+    </div>
+
+    }
+
+
+    <section class="bookings-card">
+
+        <div class="toolbar">
+
+            <div class="search-box">
+
+                <span>
+                    ⌕
+                </span>
+
+                <input type="search" placeholder="Search booking, customer, phone..." [value]="searchTerm" (input)="
+            onSearch(
+              $any($event.target).value
+            )
+          " />
+
+            </div>
+
+
+            <select [value]="bookingStatus" (change)="
+          setBookingStatus(
+            $any($event.target).value
+          )
+        ">
+                <option value="ALL">
+                    All booking status
+                </option>
+
+                <option value="CONFIRMED">
+                    Confirmed
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="CANCELLED">
+                    Cancelled
+                </option>
+            </select>
+
+
+            <select [value]="paymentStatus" (change)="
+          setPaymentStatus(
+            $any($event.target).value
+          )
+        ">
+                <option value="ALL">
+                    All payments
+                </option>
+
+                <option value="PAID">
+                    Paid
+                </option>
+
+                <option value="PENDING">
+                    Pending
+                </option>
+
+                <option value="FAILED">
+                    Failed
+                </option>
+
+                <option value="REFUNDED">
+                    Refunded
+                </option>
+            </select>
+
+
+            <select [value]="dateFilter" (change)="
+          setDateFilter(
+            $any($event.target).value
+          )
+        ">
+                <option value="ALL">
+                    All dates
+                </option>
+
+                <option value="TODAY">
+                    Today
+                </option>
+
+                <option value="TOMORROW">
+                    Tomorrow
+                </option>
+
+                <option value="THIS_WEEK">
+                    This week
+                </option>
+
+                <option value="CUSTOM">
+                    Custom date
+                </option>
+            </select>
+
+
+            @if (dateFilter === 'CUSTOM') {
+
+            <input class="date-input" type="date" [value]="customDate" (change)="
+            setCustomDate(
+              $any($event.target).value
+            )
+          " />
+
+            }
+
+
+            @if (
+            searchTerm ||
+            bookingStatus !== 'ALL' ||
+            paymentStatus !== 'ALL' ||
+            dateFilter !== 'ALL'
+            ) {
+
+            <button type="button" class="clear-button" (click)="clearFilters()">
+                Clear
+            </button>
+
+            }
+
+
+            <button type="button" class="export-button" (click)="exportCsv()" [disabled]="
+          filteredBookings.length === 0
+        ">
+                ↓ Export CSV
+            </button>
+
+        </div>
+
+
+        <div class="results-bar">
+
+            <span>
+                Showing
+                <strong>
+                    {{ pageStart }}–{{ pageEnd }}
+                </strong>
+                of
+                <strong>
+                    {{ filteredBookings.length }}
+                </strong>
+            </span>
+
+            <span>
+                Page {{ currentPage }}
+                of {{ totalPages }}
+            </span>
+
+        </div>
+
+
+        @if (loading) {
+
+        <div class="state">
+            <div class="spinner"></div>
+            Loading bookings...
+        </div>
+
+        } @else if (
+        filteredBookings.length === 0
+        ) {
+
+        <div class="state">
+
+            <div class="empty-icon">
+                ◌
+            </div>
+
+            <strong>
+                No bookings found
+            </strong>
+
+            <span>
+                Try changing your filters.
+            </span>
+
+        </div>
+
+        } @else {
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>BOOKING</th>
+                        <th>CUSTOMER</th>
+                        <th>EXPERIENCE</th>
+                        <th>DATE</th>
+                        <th>AMOUNT</th>
+                        <th>PAYMENT</th>
+                        <th>STATUS</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @for (
+                    booking of paginatedBookings;
+                    track booking.bookingId
+                    ) {
+
+                    <tr class="booking-row" (click)="
+                  openBooking(
+                    booking.bookingId
+                  )
+                ">
+
+                        <td>
+                            <strong class="booking-id">
+                                {{ booking.bookingId }}
+                            </strong>
+                        </td>
+
+                        <td>
+
+                            <div class="customer">
+
+                                <strong>
+                                    {{ booking.customerName }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.customerPhone }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="experience">
+
+                                <strong>
+                                    {{ booking.packageName }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.quantity }}
+                                    {{
+                                    booking.quantity === 1
+                                    ? 'person'
+                                    : 'people'
+                                    }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <div class="date-cell">
+
+                                <strong>
+                                    {{
+                                    formatDate(
+                                    booking.bookingDate
+                                    )
+                                    }}
+                                </strong>
+
+                                <span>
+                                    {{ booking.timeSlot }}
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+                            <strong class="amount">
+                                {{
+                                formatCurrency(
+                                booking.totalAmount
+                                )
+                                }}
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            <span class="status" [class.paid]="
+                      booking.paymentStatus === 'PAID'
+                    " [class.pending]="
+                      booking.paymentStatus === 'PENDING'
+                    " [class.failed]="
+                      booking.paymentStatus === 'FAILED'
+                    " [class.refunded]="
+                      booking.paymentStatus === 'REFUNDED'
+                    ">
+                                {{ booking.paymentStatus }}
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="status" [class.confirmed]="
+                      booking.bookingStatus === 'CONFIRMED'
+                    " [class.pending]="
+                      booking.bookingStatus === 'PENDING'
+                    " [class.cancelled]="
+                      booking.bookingStatus === 'CANCELLED'
+                    ">
+                                {{ booking.bookingStatus }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="pagination">
+
+            <button type="button" (click)="previousPage()" [disabled]="currentPage === 1">
+                ← Previous
+            </button>
+
+
+            <div class="page-numbers">
+
+                @for (
+                page of [].constructor(totalPages);
+                let i = $index;
+                track i
+                ) {
+
+                <button type="button" [class.active]="
+                currentPage === i + 1
+              " (click)="
+                setPage(i + 1)
+              ">
+                    {{ i + 1 }}
+                </button>
+
+                }
+
+            </div>
+
+
+            <button type="button" (click)="nextPage()" [disabled]="
+            currentPage === totalPages
+          ">
+                Next →
+            </button>
+
+        </div>
+
+        }
+
+    </section>
+
+</main>

@@ -1133,3 +1133,76 @@ tbody tr:hover {
 .booking-row:hover {
     background: #f2fafc !important;
 }
+.booking-row {
+    cursor: pointer;
+}
+
+.booking-row:hover {
+    background: #f2fafc !important;
+}
+
+.date-filter {
+    height: 43px;
+
+    padding: 0 12px;
+
+    border: 1px solid #dcebee;
+
+    border-radius: 11px;
+
+    outline: 0;
+
+    background: #f9fcfd;
+
+    color: #45636d;
+
+    font-family: inherit;
+
+    font-size: 10px;
+}
+
+.export-button {
+    height: 43px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 0 14px;
+
+    border: 0;
+
+    border-radius: 11px;
+
+    background: #087d95;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+.export-button:hover:not(:disabled) {
+    background: #076b80;
+}
+
+.export-button:disabled {
+    opacity: 0.45;
+
+    cursor: default;
+}
+
+@media (max-width: 700px) {
+
+    .date-filter,
+    .export-button {
+        width: 100%;
+    }
+}

@@ -30,16 +30,35 @@ export const routes: Routes = [
     path: 'admin/login',
     canActivate: [guestAdminGuard],
     loadComponent: () =>
-      import('./features/admin/admin-login.component').then(
+      import('./features/admin/auth/admin-login.component').then(
         (m) => m.AdminLoginComponent,
       ),
   },
+
+  {
+    path: 'admin/bookings',
+    canActivate: [adminAuthGuard],
+    loadComponent: () =>
+      import('./features/admin/bookings/admin-bookings.component').then(
+        (m) => m.AdminBookingsComponent,
+      ),
+  },
+
   {
     path: 'admin/bookings/:bookingId',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/admin-booking-details.component').then(
+      import('./features/admin/bookings/details/admin-booking-details.component').then(
         (m) => m.AdminBookingDetailsComponent,
+      ),
+  },
+
+  {
+    path: 'admin/packages',
+    canActivate: [adminAuthGuard],
+    loadComponent: () =>
+      import('./features/admin/packages/admin-packages.component').then(
+        (m) => m.AdminPackagesComponent,
       ),
   },
 
@@ -47,7 +66,7 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [adminAuthGuard],
     loadComponent: () =>
-      import('./features/admin/admin-dashboard.component').then(
+      import('./features/admin/dashboard/admin-dashboard.component').then(
         (m) => m.AdminDashboardComponent,
       ),
   },

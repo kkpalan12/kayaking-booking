@@ -1,3 +1,4 @@
+<app-admin-nav></app-admin-nav>
 <main class="details-page">
 
     @if (loading) {
@@ -330,6 +331,27 @@
                 Cancel booking
             </button>
 
+            }
+            @if (booking && booking.paymentStatus !== 'PAID') {
+            <button type="button" class="test-payment-button" [disabled]="submitting" (click)="simulateFailedPayment()">
+                @if (submitting) {
+                Simulating...
+                } @else {
+                Simulate Failed Payment
+                }
+            </button>
+            }
+            @if (booking && booking.paymentStatus !== 'PAID') {
+            
+            <button type="button" class="test-payment-button success-test-button" [disabled]="submitting"
+                (click)="simulateSuccessfulPayment()">
+                @if (submitting) {
+                Simulating...
+                } @else {
+                Simulate Successful Payment
+                }
+            </button>
+            
             }
 
         </div>

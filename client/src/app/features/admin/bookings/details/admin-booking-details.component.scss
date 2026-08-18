@@ -545,3 +545,36 @@
         width: 100%;
     }
 }
+.test-payment-button {
+    border: 1px solid #e5b8b3;
+
+    background: #fff7f5;
+
+    color: #a0443c;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.test-payment-button:hover {
+    background: #fff0ed;
+
+    border-color: #d89a93;
+}
+
+.test-payment-button:disabled {
+    opacity: 0.5;
+
+    cursor: wait;
+}

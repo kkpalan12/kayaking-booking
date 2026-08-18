@@ -1,0 +1,343 @@
+:host {
+    display: block;
+
+    position: relative;
+
+    z-index: 100;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+}
+
+.admin-nav {
+    width: 100%;
+
+    border-bottom: 1px solid rgba(7, 56, 71, 0.07);
+
+    background:
+        rgba(255, 255, 255, 0.94);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    box-shadow:
+        0 5px 18px rgba(7, 56, 71, 0.035);
+}
+
+.nav-shell {
+    width: min(1200px, 100%);
+
+    min-height: 68px;
+
+    margin: 0 auto;
+
+    padding: 0 24px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 28px;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.nav-brand {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+
+    color: #073847;
+
+    text-decoration: none;
+}
+
+.nav-brand-mark {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(145deg,
+            #0c8199,
+            #08697d);
+
+    color: #ffffff;
+
+    font-family: Georgia, serif;
+
+    font-size: 15px;
+
+    box-shadow:
+        0 6px 15px rgba(12, 129, 153, 0.16);
+}
+
+.nav-brand-text {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.nav-brand-text strong {
+    color: #073847;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    line-height: 1;
+
+    letter-spacing: 0.1em;
+}
+
+.nav-brand-text small {
+    color: #81979f;
+
+    font-size: 6px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 0.16em;
+}
+
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.nav-links {
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    flex: 1;
+}
+
+.nav-links a {
+    min-height: 38px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 0 13px;
+
+    border-radius: 10px;
+
+    color: #6d858d;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    transition:
+        background 150ms ease,
+        color 150ms ease;
+}
+
+.nav-links a span {
+    font-size: 13px;
+
+    line-height: 1;
+}
+
+.nav-links a:hover {
+    background: #f0fafc;
+
+    color: #08758c;
+}
+
+.nav-links a.active {
+    background: #eaf7fa;
+
+    color: #08758c;
+}
+
+
+/* =========================================================
+   USER
+   ========================================================= */
+
+.nav-user {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-shrink: 0;
+}
+
+.nav-avatar {
+    width: 34px;
+    height: 34px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #e5f6f9;
+
+    color: #08778f;
+
+    font-size: 11px;
+
+    font-weight: 800;
+}
+
+.nav-user-info {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    min-width: 0;
+}
+
+.nav-user-info strong {
+    max-width: 150px;
+
+    overflow: hidden;
+
+    color: #315661;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.nav-user-info small {
+    color: #91a3a9;
+
+    font-size: 7px;
+}
+
+.nav-logout {
+    height: 36px;
+
+    margin-left: 7px;
+
+    padding: 0 12px;
+
+    border: 1px solid #f0d9d6;
+
+    border-radius: 999px;
+
+    background: #fff8f7;
+
+    color: #a04b44;
+
+    cursor: pointer;
+
+    font-family: inherit;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+.nav-logout:hover {
+    background: #fff0ee;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 800px) {
+    .nav-shell {
+        min-height: 62px;
+
+        padding: 0 15px;
+
+        gap: 12px;
+    }
+
+    .nav-brand-text {
+        display: none;
+    }
+
+    .nav-links {
+        gap: 2px;
+    }
+
+    .nav-links a {
+        padding: 0 9px;
+
+        font-size: 9px;
+    }
+
+    .nav-links a span {
+        display: none;
+    }
+
+    .nav-user-info {
+        display: none;
+    }
+
+    .nav-logout {
+        margin-left: 2px;
+
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .nav-shell {
+        flex-wrap: wrap;
+
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
+
+    .nav-links {
+        order: 3;
+
+        width: 100%;
+
+        justify-content: center;
+    }
+
+    .nav-user {
+        margin-left: auto;
+    }
+}

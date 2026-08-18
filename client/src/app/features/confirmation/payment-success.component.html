@@ -1,21 +1,16 @@
-<main class="success-page">
+<main class="payment-page">
 
-    <section class="success-card">
-
-        <!-- SUCCESS ICON -->
-        <div class="success-icon" aria-hidden="true">
-            ✓
-        </div>
-
+    <section class="payment-card">
 
         <!-- BRAND -->
-        <div class="success-brand">
 
-            <div class="success-brand-mark">
+        <div class="brand">
+
+            <div class="brand-mark">
                 R
             </div>
 
-            <div class="success-brand-text">
+            <div class="brand-text">
 
                 <strong>
                     RIVER EDGE
@@ -30,100 +25,388 @@
         </div>
 
 
-        <!-- EYEBROW -->
-        <span class="success-eyebrow">
-            PAYMENT RECEIVED
-        </span>
+        <!-- LOADING / PROCESSING -->
 
+        @if (isProcessing) {
 
-        <!-- TITLE -->
-        <h1>
-            You're all set!
-        </h1>
+        <div class="state-content">
 
+            <div class="processing-icon">
 
-        <!-- DESCRIPTION -->
-        <p class="success-description">
-            Your mangrove adventure is booked.
-            We've received your payment and your
-            adventure is now waiting for you.
-        </p>
+                <div class="spinner"></div>
 
+            </div>
 
-        <!-- BOOKING REFERENCE -->
-        @if (bookingId) {
-
-        <div class="booking-reference">
-
-            <span>
-                BOOKING ID
+            <span class="eyebrow">
+                PAYMENT PROCESSING
             </span>
 
-            <strong>
-                {{ bookingId }}
-            </strong>
+            <h1>
+                We're confirming your payment
+            </h1>
+
+            <p>
+                Your payment was received by the
+                payment gateway. We're waiting for
+                the secure payment confirmation.
+            </p>
+
+            @if (bookingId) {
+
+            <div class="booking-reference">
+
+                <span>
+                    BOOKING ID
+                </span>
+
+                <strong>
+                    {{ bookingId }}
+                </strong>
+
+            </div>
+
+            }
+
+            <div class="info-box">
+
+                <span class="info-icon">
+                    ⏳
+                </span>
+
+                <div>
+
+                    <strong>
+                        Please don't make another payment
+                    </strong>
+
+                    <p>
+                        We're checking your payment
+                        automatically. This usually takes
+                        only a few moments.
+                    </p>
+
+                </div>
+
+            </div>
 
         </div>
 
         }
 
 
-        <!-- WHAT'S NEXT -->
-        <div class="next-box">
+        <!-- SUCCESS -->
 
-            <div class="next-icon">
-                💬
+        @if (isSuccess) {
+
+        <div class="state-content">
+
+            <div class="success-icon">
+                ✓
             </div>
 
-            <div class="next-content">
+            <span class="eyebrow success-eyebrow">
+                PAYMENT CONFIRMED
+            </span>
+
+            <h1>
+                You're all set!
+            </h1>
+
+            <p>
+                Your mangrove adventure is officially
+                booked. We've received your payment.
+            </p>
+
+
+            @if (bookingId) {
+
+            <div class="booking-reference">
+
+                <span>
+                    BOOKING ID
+                </span>
 
                 <strong>
-                    What's next?
+                    {{ bookingId }}
                 </strong>
 
+            </div>
+
+            }
+
+
+            @if (booking) {
+
+            <div class="booking-summary">
+
+                <div class="summary-row">
+
+                    <span>
+                        Experience
+                    </span>
+
+                    <strong>
+                        {{ booking.packageName }}
+                    </strong>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Date
+                    </span>
+
+                    <strong>
+                        {{ formatDate(booking.bookingDate) }}
+                    </strong>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Time
+                    </span>
+
+                    <strong>
+                        {{ booking.timeSlot }}
+                    </strong>
+
+                </div>
+
+                <div class="summary-row">
+
+                    <span>
+                        Guests
+                    </span>
+
+                    <strong>
+                        {{ booking.quantity }}
+                    </strong>
+
+                </div>
+
+                <div class="summary-row total">
+
+                    <span>
+                        Total paid
+                    </span>
+
+                    <strong>
+                        ₹{{ booking.totalAmount }}
+                    </strong>
+
+                </div>
+
+            </div>
+
+            }
+
+
+            <div class="info-box success-box">
+
+                <span class="info-icon">
+                    💬
+                </span>
+
+                <div>
+
+                    <strong>
+                        WhatsApp confirmation
+                    </strong>
+
+                    <p>
+                        Your booking confirmation will be
+                        sent to your WhatsApp number.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="adventure-message">
+
+                <span>
+                    🛶
+                </span>
+
                 <p>
-                    We'll confirm your booking and send
-                    the details to your WhatsApp number.
+                    Get ready to paddle, explore and
+                    experience the mangroves.
                 </p>
 
             </div>
 
+
+            <a routerLink="/" class="primary-button">
+                <span>
+                    Back to River Edge
+                </span>
+
+                <span>
+                    →
+                </span>
+            </a>
+
         </div>
 
+        }
 
-        <!-- ADVENTURE MESSAGE -->
-        <div class="adventure-message">
 
-            <span class="adventure-icon">
-                🛶
+        <!-- FAILED -->
+
+        @if (isFailed) {
+
+        <div class="state-content">
+
+            <div class="failed-icon">
+                !
+            </div>
+
+            <span class="eyebrow failed-eyebrow">
+                PAYMENT NOT COMPLETED
             </span>
+
+            <h1>
+                Payment wasn't completed
+            </h1>
 
             <p>
-                Get ready to paddle, explore and
-                experience the mangroves.
+                Your payment was cancelled or
+                unsuccessful. Don't worry — your
+                booking has not been confirmed.
             </p>
+
+
+            @if (bookingId) {
+
+            <div class="booking-reference">
+
+                <span>
+                    BOOKING ID
+                </span>
+
+                <strong>
+                    {{ bookingId }}
+                </strong>
+
+            </div>
+
+            }
+
+
+            <div class="info-box failed-box">
+
+                <span class="info-icon">
+                    ↻
+                </span>
+
+                <div>
+
+                    <strong>
+                        Your booking is still pending
+                    </strong>
+
+                    <p>
+                        You can return to the booking page
+                        and try the payment again.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        <div class="button-group">
+        
+            <button type="button" class="primary-button" (click)="retryPayment()" [disabled]="retryingPayment">
+                @if (retryingPayment) {
+                <span>
+                    Starting payment...
+                </span>
+                } @else {
+                <span>
+                    Retry Payment
+                </span>
+        
+                <span>
+                    →
+                </span>
+                }
+            </button>
+        
+            <a routerLink="/" class="secondary-button">
+                Back to River Edge
+            </a>
+        
+        </div>
 
         </div>
 
+        }
 
-        <!-- HOME BUTTON -->
-        <a routerLink="/" class="home-button">
 
-            <span class="home-button-text">
-                Back to River Edge
+        <!-- NOT FOUND / ERROR -->
+
+        @if (isError) {
+
+        <div class="state-content">
+
+            <div class="failed-icon">
+                !
+            </div>
+
+            <span class="eyebrow failed-eyebrow">
+                PAYMENT STATUS
             </span>
 
-            <span class="home-button-arrow">
-                →
-            </span>
+            <h1>
+                We couldn't verify this booking
+            </h1>
 
-        </a>
+            <p>
+                We couldn't find the booking
+                information needed to confirm your
+                payment.
+            </p>
+
+            @if (bookingId) {
+
+            <div class="booking-reference">
+
+                <span>
+                    REFERENCE
+                </span>
+
+                <strong>
+                    {{ bookingId }}
+                </strong>
+
+            </div>
+
+            }
 
 
-        <!-- FOOTER -->
-        <p class="success-footer">
-            Thank you for choosing
-            River Edge Mangrove Kayaking &amp; Adventure.
+            <a routerLink="/" class="primary-button">
+                <span>
+                    Back to River Edge
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </a>
+
+        </div>
+
+        }
+
+
+        <p class="footer">
+            River Edge Mangrove Kayaking &amp; Adventure
         </p>
 
     </section>

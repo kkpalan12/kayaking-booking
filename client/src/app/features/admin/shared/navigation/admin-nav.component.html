@@ -1,0 +1,90 @@
+
+<nav class="admin-nav">
+
+    <div class="nav-shell">
+
+        <!-- BRAND -->
+
+        <a routerLink="/admin" class="nav-brand">
+
+            <span class="nav-brand-mark">
+                R
+            </span>
+
+            <span class="nav-brand-text">
+
+                <strong>
+                    RIVER EDGE
+                </strong>
+
+                <small>
+                    ADMIN
+                </small>
+
+            </span>
+
+        </a>
+
+
+        <!-- NAVIGATION -->
+
+        <div class="nav-links">
+
+            <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{
+          exact: true
+        }">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+
+            <a routerLink="/admin/bookings" routerLinkActive="active">
+                <span>▤</span>
+                Bookings
+            </a>
+
+
+            <a routerLink="/admin/packages" routerLinkActive="active">
+                <span>◇</span>
+                Packages
+            </a>
+
+        </div>
+
+
+        <!-- USER -->
+
+        <div class="nav-user">
+
+            <div class="nav-avatar">
+                {{
+                adminEmail
+                .charAt(0)
+                .toUpperCase() || 'A'
+                }}
+            </div>
+
+            <div class="nav-user-info">
+
+                <strong>
+                    {{
+                    adminEmail ||
+                    'Administrator'
+                    }}
+                </strong>
+
+                <small>
+                    Administrator
+                </small>
+
+            </div>
+
+            <button type="button" class="nav-logout" (click)="logout()">
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</nav>

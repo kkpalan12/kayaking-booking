@@ -4,14 +4,15 @@ import { Component, inject, OnInit } from '@angular/core';
 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { BookingService } from '../../core/services/booking.service';
+import { BookingService } from '../../../../core/services/booking.service';
 
-import { Booking } from '../../core/models/booking.model';
+import { Booking } from '../../../../core/models/booking.model';
+import { AdminNavComponent } from '../../shared/navigation/admin-nav.component';
 
 @Component({
   selector: 'app-admin-booking-details',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, AdminNavComponent],
   templateUrl: './admin-booking-details.component.html',
   styleUrl: './admin-booking-details.component.scss',
 })
@@ -152,5 +153,83 @@ export class AdminBookingDetailsComponent implements OnInit {
       `booking ${this.booking.bookingId}.`;
 
     return `https://wa.me/91${phone}` + `?text=${encodeURIComponent(message)}`;
+  }
+  simulateFailedPayment(): void {
+    if (!this.booking || this.submitting) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      'Simulate a failed payment for this booking?',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.submitting = true;
+
+    this.error = '';
+
+    this.successMessage = '';
+
+    this.bookingService
+      .simulateTestFailedPayment(this.booking.bookingId)
+      .subscribe({
+        next: (booking) => {
+          this.booking = booking;
+
+          this.submitting = false;
+
+          this.successMessage =
+            'Test failed payment simulated. Booking remains pending.';
+        },
+
+        error: (error) => {
+          console.error('Failed to simulate payment:', error);
+
+          this.submitting = false;
+
+          this.error =
+            error?.error?.message || 'Unable to simulate failed payment.';
+        },
+      });
+  }
+  simulateSuccessfulPayment(): void {
+    if (!this.booking || this.submitting) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      'Simulate a successful payment for this booking?',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.submitting = true;
+    this.error = '';
+    this.successMessage = '';
+
+    this.bookingService.simulateTestPayment(this.booking.bookingId).subscribe({
+      next: (booking) => {
+        this.booking = booking;
+
+        this.submitting = false;
+
+        this.successMessage =
+          'Test payment simulated successfully. Booking confirmed.';
+      },
+
+      error: (error) => {
+        console.error('Failed to simulate successful payment:', error);
+
+        this.submitting = false;
+
+        this.error =
+          error?.error?.message || 'Unable to simulate successful payment.';
+      },
+    });
   }
 }

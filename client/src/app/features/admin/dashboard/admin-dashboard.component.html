@@ -1,30 +1,14 @@
+<app-admin-nav></app-admin-nav>
+
 <main class="admin-page">
 
-    <!-- HEADER -->
+    <!-- =====================================================
+       HEADER
+       ===================================================== -->
 
     <header class="admin-header">
 
         <div class="admin-heading">
-
-            <div class="admin-brand">
-
-                <div class="admin-brand-mark">
-                    R
-                </div>
-
-                <div class="admin-brand-text">
-
-                    <strong>
-                        RIVER EDGE
-                    </strong>
-
-                    <span>
-                        MANGROVE KAYAKING &amp; ADVENTURE
-                    </span>
-
-                </div>
-
-            </div>
 
             <span class="admin-eyebrow">
                 ADMIN PORTAL
@@ -42,51 +26,22 @@
         </div>
 
 
-        <div class="admin-actions">
+        <!-- REFRESH ONLY -->
 
-            <div class="admin-user">
+        <button type="button" class="refresh-button" (click)="loadBookings()" [disabled]="loading">
+            <span>
+                ↻
+            </span>
 
-                <div class="admin-avatar">
-                    {{
-                    adminEmail.charAt(0).toUpperCase() ||
-                    'A'
-                    }}
-                </div>
-
-                <div>
-
-                    <strong>
-                        {{ adminEmail || 'Administrator' }}
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <button type="button" class="refresh-button" (click)="loadBookings()" [disabled]="loading">
-                <span>
-                    ↻
-                </span>
-
-                Refresh
-            </button>
-
-
-            <button type="button" class="logout-button" (click)="logout()">
-                Logout
-            </button>
-
-        </div>
+            Refresh
+        </button>
 
     </header>
 
 
-    <!-- ERROR -->
+    <!-- =====================================================
+       ERROR
+       ===================================================== -->
 
     @if (error) {
 
@@ -105,9 +60,13 @@
     }
 
 
-    <!-- STATS -->
+    <!-- =====================================================
+       STATS
+       ===================================================== -->
 
     <section class="stats-grid">
+
+        <!-- TOTAL BOOKINGS -->
 
         <article class="stat-card">
 
@@ -126,6 +85,8 @@
         </article>
 
 
+        <!-- TODAY -->
+
         <article class="stat-card stat-blue">
 
             <span class="stat-label">
@@ -143,6 +104,8 @@
         </article>
 
 
+        <!-- REVENUE -->
+
         <article class="stat-card stat-green">
 
             <span class="stat-label">
@@ -159,6 +122,8 @@
 
         </article>
 
+
+        <!-- UPCOMING -->
 
         <article class="stat-card stat-purple">
 
@@ -179,9 +144,13 @@
     </section>
 
 
-    <!-- STATUS SUMMARY -->
+    <!-- =====================================================
+       STATUS SUMMARY
+       ===================================================== -->
 
     <section class="summary-grid">
+
+        <!-- CONFIRMED -->
 
         <div class="summary-item">
 
@@ -202,6 +171,8 @@
         </div>
 
 
+        <!-- PENDING -->
+
         <div class="summary-item">
 
             <span class="summary-dot pending"></span>
@@ -220,6 +191,8 @@
 
         </div>
 
+
+        <!-- CANCELLED -->
 
         <div class="summary-item">
 
@@ -240,6 +213,8 @@
         </div>
 
 
+        <!-- PAID -->
+
         <div class="summary-item">
 
             <span class="summary-dot paid"></span>
@@ -258,6 +233,8 @@
 
         </div>
 
+
+        <!-- PAYMENT PENDING -->
 
         <div class="summary-item">
 
@@ -280,9 +257,14 @@
     </section>
 
 
-    <!-- BOOKINGS -->
+    <!-- =====================================================
+       BOOKINGS
+       ===================================================== -->
 
     <section class="bookings-section">
+
+
+        <!-- SECTION HEADER -->
 
         <div class="section-header">
 
@@ -298,17 +280,30 @@
 
             </div>
 
+
             <span class="result-count">
+
                 {{ filteredBookings.length }}
-                results
+
+                result{{
+                filteredBookings.length === 1
+                ? ''
+                : 's'
+                }}
+
             </span>
 
         </div>
 
 
-        <!-- FILTERS -->
+        <!-- ===================================================
+         FILTERS
+         =================================================== -->
 
         <div class="filters">
+
+
+            <!-- SEARCH -->
 
             <div class="search-box">
 
@@ -323,6 +318,8 @@
 
             </div>
 
+
+            <!-- BOOKING STATUS -->
 
             <select [value]="bookingStatus" (change)="
           setBookingStatus(
@@ -348,6 +345,8 @@
 
             </select>
 
+
+            <!-- PAYMENT STATUS -->
 
             <select [value]="paymentStatus" (change)="
           setPaymentStatus(
@@ -378,10 +377,57 @@
             </select>
 
 
+            <!-- DATE FILTER -->
+
+            <select [value]="dateFilter" (change)="
+          setDateFilter(
+            $any($event.target).value
+          )
+        ">
+
+                <option value="ALL">
+                    All dates
+                </option>
+
+                <option value="TODAY">
+                    Today
+                </option>
+
+                <option value="TOMORROW">
+                    Tomorrow
+                </option>
+
+                <option value="THIS_WEEK">
+                    This week
+                </option>
+
+                <option value="CUSTOM">
+                    Custom date
+                </option>
+
+            </select>
+
+
+            <!-- CUSTOM DATE -->
+
+            @if (dateFilter === 'CUSTOM') {
+
+            <input class="date-filter" type="date" [value]="customDate" (change)="
+            setCustomDate(
+              $any($event.target).value
+            )
+          " aria-label="Select custom booking date" />
+
+            }
+
+
+            <!-- CLEAR -->
+
             @if (
             searchTerm ||
             bookingStatus !== 'ALL' ||
-            paymentStatus !== 'ALL'
+            paymentStatus !== 'ALL' ||
+            dateFilter !== 'ALL'
             ) {
 
             <button type="button" class="clear-button" (click)="clearFilters()">
@@ -390,10 +436,27 @@
 
             }
 
+
+            <!-- CSV EXPORT -->
+
+            <button type="button" class="export-button" (click)="exportCsv()" [disabled]="
+          filteredBookings.length === 0
+        ">
+
+                <span>
+                    ↓
+                </span>
+
+                Export CSV
+
+            </button>
+
         </div>
 
 
-        <!-- LOADING -->
+        <!-- ===================================================
+         LOADING
+         =================================================== -->
 
         @if (loading) {
 
@@ -410,7 +473,9 @@
         }
 
 
-        <!-- EMPTY -->
+        <!-- ===================================================
+         EMPTY
+         =================================================== -->
 
         @else if (
         filteredBookings.length === 0
@@ -427,7 +492,7 @@
             </strong>
 
             <span>
-                Try changing your filters.
+                Try changing your search or filters.
             </span>
 
         </div>
@@ -435,7 +500,9 @@
         }
 
 
-        <!-- TABLE -->
+        <!-- ===================================================
+         TABLE
+         =================================================== -->
 
         @else {
 
@@ -486,7 +553,15 @@
                     booking of recentBookings;
                     track booking.bookingId
                     ) {
-<tr class="booking-row" (click)="openBooking(booking.bookingId)">
+
+                    <tr class="booking-row" (click)="
+                  openBooking(
+                    booking.bookingId
+                  )
+                ">
+
+                        <!-- BOOKING -->
+
                         <td>
 
                             <strong class="booking-id">
@@ -495,6 +570,8 @@
 
                         </td>
 
+
+                        <!-- CUSTOMER -->
 
                         <td>
 
@@ -513,6 +590,8 @@
                         </td>
 
 
+                        <!-- EXPERIENCE -->
+
                         <td>
 
                             <div class="experience">
@@ -522,6 +601,7 @@
                                 </strong>
 
                                 <span>
+
                                     {{ booking.quantity }}
 
                                     {{
@@ -529,12 +609,15 @@
                                     ? 'person'
                                     : 'people'
                                     }}
+
                                 </span>
 
                             </div>
 
                         </td>
 
+
+                        <!-- DATE -->
 
                         <td>
 
@@ -557,6 +640,8 @@
                         </td>
 
 
+                        <!-- AMOUNT -->
+
                         <td>
 
                             <strong class="amount">
@@ -570,16 +655,22 @@
                         </td>
 
 
+                        <!-- PAYMENT -->
+
                         <td>
 
                             <span class="status payment" [class.paid]="
-                      booking.paymentStatus === 'PAID'
+                      booking.paymentStatus ===
+                      'PAID'
                     " [class.pending]="
-                      booking.paymentStatus === 'PENDING'
+                      booking.paymentStatus ===
+                      'PENDING'
                     " [class.failed]="
-                      booking.paymentStatus === 'FAILED'
+                      booking.paymentStatus ===
+                      'FAILED'
                     " [class.refunded]="
-                      booking.paymentStatus === 'REFUNDED'
+                      booking.paymentStatus ===
+                      'REFUNDED'
                     ">
                                 {{ booking.paymentStatus }}
                             </span>
@@ -587,14 +678,19 @@
                         </td>
 
 
+                        <!-- BOOKING STATUS -->
+
                         <td>
 
                             <span class="status booking" [class.confirmed]="
-                      booking.bookingStatus === 'CONFIRMED'
+                      booking.bookingStatus ===
+                      'CONFIRMED'
                     " [class.pending]="
-                      booking.bookingStatus === 'PENDING'
+                      booking.bookingStatus ===
+                      'PENDING'
                     " [class.cancelled]="
-                      booking.bookingStatus === 'CANCELLED'
+                      booking.bookingStatus ===
+                      'CANCELLED'
                     ">
                                 {{ booking.bookingStatus }}
                             </span>
@@ -612,14 +708,19 @@
         </div>
 
 
+        <!-- FOOTER -->
+
         @if (
         filteredBookings.length > 10
         ) {
 
         <div class="table-footer">
 
-            Showing first 10 bookings.
-            Search or filter to find a booking.
+            Showing the 10 most recent
+            bookings from the current filter.
+
+            Search or filter to find
+            a specific booking.
 
         </div>
 
@@ -630,7 +731,9 @@
     </section>
 
 
-    <!-- SECURITY NOTE -->
+    <!-- =====================================================
+       SECURITY
+       ===================================================== -->
 
     <aside class="security-note">
 
@@ -646,7 +749,10 @@
 
             <p>
                 This dashboard is protected by
-                admin authentication.
+                admin authentication. Customer booking
+                creation remains publicly available,
+                while booking management requires
+                administrator access.
             </p>
 
         </div>
