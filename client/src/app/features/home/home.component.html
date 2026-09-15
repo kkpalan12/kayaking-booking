@@ -1,483 +1,107 @@
-<main class="home">
+<main class="home-page">
+  <header class="site-header">
+    <a class="brand" routerLink="/" aria-label="River Edge home">
+      <span class="brand-mark">RE</span>
+      <span class="brand-copy"><strong>RIVER EDGE</strong><small>MANGROVE EXPERIENCES</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a href="#experiences">Experiences</a><a href="#why-us">Why River Edge</a><a href="#reviews">Reviews</a><a href="#location">Find Us</a>
+    </nav>
+    <button class="header-cta" type="button" (click)="scrollToExperiences()">Book Now <span>↗</span></button>
+  </header>
 
-    <!-- =====================================================
-       HERO
-       ===================================================== -->
+  <section class="hero" [ngStyle]="heroStyle">
+    <div class="hero-shade"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">NATURE · PEOPLE · ADVENTURE</span>
+      <h1>Paddle through<br /><em>Udupi's hidden mangroves.</em></h1>
+      <p>Guided kayaking experiences on calm waters, surrounded by rich biodiversity and the quiet beauty of the coast.</p>
+      <div class="hero-actions">
+        <button type="button" class="primary-cta" (click)="scrollToExperiences()">Book your adventure <span>→</span></button>
+        <a class="secondary-cta" href="#why-us">Discover River Edge <span>↓</span></a>
+      </div>
+      <div class="hero-trust">
+        <div><strong>4.9</strong><span>Google rating</span></div>
+        <i></i><div><strong>5000+</strong><span>Happy explorers</span></div>
+        <i></i><div><strong>Eco</strong><span>Sustainable tourism</span></div>
+        <i></i><div><strong>Udupi</strong><span>Sasthana</span></div>
+      </div>
+    </div>
+    <div class="hero-note">Paddle · Explore · Belong</div>
+    <div class="scroll-hint">Scroll to explore <span>↓</span></div>
+  </section>
 
-    <section class="hero" [ngStyle]="heroStyle">
+  <section id="experiences" class="section experiences-section">
+    <div class="section-heading">
+      <span class="eyebrow">OUR EXPERIENCES</span>
+      <h2>Find your perfect adventure</h2>
+      <p>Choose an experience, pick your time, and let the river do the rest.</p>
+    </div>
 
-        <div class="hero-overlay"></div>
-
-        <div class="hero-content">
-
-            <div class="hero-brand">
-
-                <div class="hero-brand-mark">
-                    R
-                </div>
-
-                <div class="hero-brand-text">
-
-                    <span class="hero-brand-name">
-                        River Edge
-                    </span>
-
-                    <span class="hero-brand-subtitle">
-                        Mangrove Kayaking &amp; Adventure
-                    </span>
-
-                </div>
-
+    @if (loading) { <div class="state-card">Preparing today's experiences…</div> }
+    @else if (error) { <div class="state-card">Unable to load experiences. Please try again.</div> }
+    @else if (packages.length > 0) {
+      <div class="package-grid">
+        @for (package of packages; track package._id; let first = $first) {
+          <article class="experience-card" [class.featured]="first">
+            <div class="card-image">
+              @if (package.image) { <img [src]="package.image" [alt]="package.name" loading="lazy" /> }
+              @else { <img src="assets/mangrove-hero.jpg" [alt]="package.name" loading="lazy" /> }
+              @if (first) { <span class="card-badge">Most popular</span> }
+              @if (hasDiscount(package)) { <span class="card-offer">{{ getDiscountText(package) }}</span> }
             </div>
-
-            <span class="hero-eyebrow">
-                Kayak · Explore · Escape
-            </span>
-
-            <h1>
-                Paddle into
-                <em>nature.</em>
-            </h1>
-
-            <p>
-                Explore peaceful mangrove waters,
-                unforgettable adventures and moments
-                worth taking home.
-            </p>
-
-            <a class="hero-button" href="#experiences" (click)="$event.preventDefault(); scrollToExperiences()">
-
-                <span class="hero-button-text">
-                    Explore Experiences
-                </span>
-
-                <span class="hero-button-arrow">
-                    ↓
-                </span>
-
-            </a>
-
-        </div>
-
-        <div class="hero-bottom">
-
-            <span>
-                River Edge · Mangrove Adventure
-            </span>
-
-            <span>
-                Scroll to explore ↓
-            </span>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-       EXPERIENCES
-       ===================================================== -->
-
-    <section id="experiences" class="experiences">
-
-        <div class="section-heading">
-
-            <span class="eyebrow">
-                Our Experiences
-            </span>
-
-            <h2>
-                Choose your adventure
-            </h2>
-
-            <p>
-                Simple booking. Beautiful experiences.
-            </p>
-
-        </div>
-
-
-        @if (loading) {
-
-        <div class="loading">
-            Loading experiences...
-        </div>
-
-        } @else if (error) {
-
-        <div class="loading">
-            Unable to load experiences.
-            Please try again.
-        </div>
-
-        } @else {
-
-        @if (packages.length > 0) {
-
-        <div class="package-list">
-
-            @for (
-            package of packages;
-            track package._id
-            ) {
-
-            <article class="package-card">
-
-                <div class="package-image">
-
-                    @if (package.image) {
-
-                    <img [src]="package.image" [alt]="package.name" loading="lazy" />
-
-                    } @else {
-
-                    <div class="image-placeholder">
-
-                        <span>
-                            {{
-                            package.pricingType === 'PER_PERSON'
-                            ? '🛶'
-                            : '🌿'
-                            }}
-                        </span>
-
-                    </div>
-
-                    }
-
-                    @if (hasDiscount(package)) {
-
-                    <span class="discount-badge">
-                        {{ getDiscountText(package) }}
-                    </span>
-
-                    }
-
+            <div class="card-body">
+              <div class="card-meta">
+                <span>◷ {{ package.duration || 'Guided experience' }}</span>
+                <span>♧ {{ package.pricingType === 'PER_PERSON' ? 'Beginner friendly' : 'Private booking' }}</span>
+              </div>
+              <h3>{{ package.name }}</h3>
+              @if (package.description) { <p>{{ package.description }}</p> }
+              <div class="card-footer">
+                <div class="price-wrap">
+                  @if (hasDiscount(package)) { <del>₹{{ package.price }}</del> }
+                  <strong>₹{{ getDiscountedPrice(package) }}</strong><span>{{ getPricingLabel(package) }}</span>
                 </div>
-
-
-                <div class="package-content">
-
-                    <div class="package-top">
-
-                        <div>
-
-                            <h3>
-                                {{ package.name }}
-                            </h3>
-
-                            @if (package.duration) {
-
-                            <span class="duration">
-                                ⏱ {{ package.duration }}
-                            </span>
-
-                            }
-
-                        </div>
-
-
-                        <div class="price">
-
-                            @if (hasDiscount(package)) {
-
-                            <strong>
-                                ₹{{ getDiscountedPrice(package) }}
-                            </strong>
-
-                            <span class="original-price">
-                                ₹{{ package.price }}
-                            </span>
-
-                            } @else {
-
-                            <strong>
-                                ₹{{ package.price }}
-                            </strong>
-
-                            <span>
-                                {{ getPricingLabel(package) }}
-                            </span>
-
-                            }
-
-                        </div>
-
-                    </div>
-
-
-                    @if (package.description) {
-
-                    <p class="description">
-                        {{ package.description }}
-                    </p>
-
-                    }
-
-
-                    @if (hasDiscount(package)) {
-
-                    <div class="offer">
-                        {{ getDiscountText(package) }}
-                    </div>
-
-                    }
-
-
-                    <button type="button" class="book-button" (click)="bookNow(package)">
-
-                        <span>
-                            Book Now
-                        </span>
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </div>
-
-            </article>
-
-            }
-
-        </div>
-
-        } @else {
-
-        <div class="loading">
-            No experiences are currently available.
-        </div>
-
+                <button type="button" class="card-cta" (click)="bookNow(package)">Book <span>→</span></button>
+              </div>
+            </div>
+          </article>
         }
-
-        }
-
-    </section>
-
-
-    <!-- =====================================================
-       GOOGLE REVIEWS
-       ===================================================== -->
-
-    <section class="reviews-section">
-
-        <div class="reviews-container">
-
-
-            <div class="reviews-heading">
-
-                <div class="reviews-heading-top">
-
-                    <span class="eyebrow">
-                        Google Reviews
-                    </span>
-
-                    <span class="google-label">
-                        G
-                    </span>
-
-                </div>
-
-                <h2>
-                    Loved by<br />
-                    our guests.
-                </h2>
-
-                <p class="reviews-intro">
-                    Real experiences from people who
-                    paddled with River Edge.
-                </p>
-
-            </div>
-
-
-            <!-- REVIEWS -->
-
-            <div class="reviews-grid">
-
-                @for (
-                review of googleReviews;
-                track review.name
-                ) {
-
-                <article class="review-card">
-
-
-                    <!-- TOP -->
-
-                    <div class="review-card-top">
-
-                        <div class="review-avatar">
-                            {{ review.name.charAt(0).toUpperCase() }}
-                        </div>
-
-                        <div class="review-person">
-
-                            <strong>
-                                {{ review.name }}
-                            </strong>
-
-                            @if (review.reviewerType) {
-
-                            <span>
-                                {{ review.reviewerType }}
-                            </span>
-
-                            }
-
-                        </div>
-
-                        <span class="google-mini">
-                            G
-                        </span>
-
-                    </div>
-
-
-                    <!-- STARS -->
-
-                    <div class="review-stars">
-                        ★★★★★
-                    </div>
-
-
-                    <!-- DATE -->
-
-                    <span class="review-date">
-                        {{ review.date }}
-                    </span>
-
-
-                    <!-- TEXT -->
-
-                    <p>
-                        {{ review.text }}
-                    </p>
-
-
-                    <!-- PROFILE -->
-
-                    <a class="review-link" [href]="review.profileUrl" target="_blank" rel="noopener noreferrer">
-                        View on Google
-                        <span>↗</span>
-                    </a>
-
-                </article>
-
-                }
-
-            </div>
-
-
-            <!-- GOOGLE CTA -->
-
-            <div class="reviews-footer">
-
-                <div class="reviews-summary">
-
-                    <span class="summary-stars">
-                        ★★★★★
-                    </span>
-
-                    <span>
-                        See more guest experiences on Google
-                    </span>
-
-                </div>
-
-                <a class="google-review-button"
-                    href="https://www.google.com/search?q=River+Edge+Mangrove+Kayaking+Adventure" target="_blank"
-                    rel="noopener noreferrer">
-                    See all reviews
-                    <span>↗</span>
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-       LOCATION
-       ===================================================== -->
-
-    <section class="location-section">
-
-        <div class="location-container">
-
-            <div class="location-content">
-
-                <span class="eyebrow">
-                    Find Us
-                </span>
-
-                <h2>
-                    Meet us by<br />
-                    the river.
-                </h2>
-
-                <p>
-                    Ready to paddle through the mangroves?
-                    Find River Edge Mangrove Kayaking &
-                    Adventure and start your journey.
-                </p>
-
-                <a class="location-button" href="https://share.google/Rp6uMPSE3NUKZHxOR" target="_blank"
-                    rel="noopener noreferrer">
-                    Get Directions
-
-                    <span>
-                        ↗
-                    </span>
-
-                </a>
-
-            </div>
-
-
-            <div class="location-map">
-
-                <div class="location-map-inner">
-
-                    <span class="location-pin">
-                        📍
-                    </span>
-
-                    <strong>
-                        River Edge
-                    </strong>
-
-                    <span>
-                        Mangrove Kayaking &amp; Adventure
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-    <footer class="footer">
-
-        <span>
-            River Edge · Mangrove Adventure
-        </span>
-
-        <small>
-            Discover. Paddle. Remember.
-        </small>
-
-    </footer>
-
+      </div>
+    } @else { <div class="state-card">No experiences are currently available.</div> }
+  </section>
+
+  <section id="why-us" class="why-section">
+    <div class="why-inner">
+      <div class="why-copy"><span class="eyebrow">WHY RIVER EDGE</span><h2>A deeper connection<br /><em>with nature.</em></h2><p>We believe the best adventures leave you with more than a photograph — they leave you with a feeling of connection.</p></div>
+      <div class="why-image"><img src="assets/mangrove-hero.jpg" alt="Kayaking through the mangroves" loading="lazy" /><span>Nature · People · Cleaner Rivers · Brighter Tomorrows</span></div>
+    </div>
+    <div class="values-grid">
+      <article><span>⌁</span><strong>Immerse in nature</strong><p>Explore pristine mangroves and quiet waterways.</p></article>
+      <article><span>◈</span><strong>Safe & guided</strong><p>Experienced guides and safety equipment provided.</p></article>
+      <article><span>♥</span><strong>Made for everyone</strong><p>Families, friends and solo explorers are welcome.</p></article>
+      <article><span>◉</span><strong>Support local</strong><p>A community-led experience built around the river.</p></article>
+    </div>
+  </section>
+
+  <section id="reviews" class="section reviews-section">
+    <div class="section-heading split-heading"><div><span class="eyebrow">GOOGLE REVIEWS</span><h2>Loved by explorers.</h2></div><a class="text-link" href="https://www.google.com/search?q=River+Edge+Mangrove+Kayaking+Adventure" target="_blank" rel="noopener noreferrer">See all reviews ↗</a></div>
+    <div class="rating-strip"><strong>4.9</strong><span class="stars">★★★★★</span><span>Google rating · real guest experiences</span></div>
+    <div class="reviews-grid">
+      @for (review of googleReviews; track review.name) {
+        <article class="review-card"><div class="review-top"><span class="avatar">{{ review.name.charAt(0).toUpperCase() }}</span><div><strong>{{ review.name }}</strong><small>{{ review.reviewerType || 'Google reviewer' }}</small></div><span class="google-g">G</span></div><div class="stars">★★★★★</div><p>“{{ review.text }}”</p><a [href]="review.profileUrl" target="_blank" rel="noopener noreferrer">View on Google ↗</a></article>
+      }
+    </div>
+  </section>
+
+  <section id="location" class="location-section">
+    <div class="location-copy"><span class="eyebrow">FIND US</span><h2>Easy to reach.<br /><em>Hard to forget.</em></h2><p>Come to Sasthana, Udupi and start your adventure from the edge of the mangroves.</p><div class="location-facts"><span>⌖ <b>Sasthana, Udupi</b><small>Karnataka, India</small></span><span>◷ <b>Open daily</b><small>6:00 AM – 6:00 PM</small></span></div><a class="outline-cta" href="https://share.google/Rp6uMPSE3NUKZHxOR" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a></div>
+    <div class="map-card"><div class="map-art"><span class="map-pin">●</span><div><strong>River Edge</strong><small>Mangrove Kayaking</small></div></div><div class="map-caption">Sasthana · Udupi · Karnataka</div></div>
+  </section>
+
+  <section class="final-cta"><div><span class="eyebrow">YOUR NEXT MEMORY</span><h2>Ready to explore?</h2><p>Book your kayaking adventure and meet us on the water.</p></div><button type="button" class="primary-cta" (click)="scrollToExperiences()">Book your adventure <span>→</span></button></section>
+
+  <footer class="site-footer"><a class="brand" routerLink="/"><span class="brand-mark">RE</span><span class="brand-copy"><strong>RIVER EDGE</strong><small>MANGROVE EXPERIENCES</small></span></a><div class="footer-links"><a href="#experiences">Experiences</a><a href="#reviews">Reviews</a><a href="#location">Find Us</a></div><span>Nature today. Brighter tomorrows. 🌿</span></footer>
+
+  <nav class="mobile-bottom-nav" aria-label="Mobile navigation"><a href="#experiences"><span>⌂</span>Explore</a><a href="#experiences"><span>◫</span>Book</a><a href="#reviews"><span>★</span>Reviews</a><a href="#location"><span>⌖</span>Find us</a></nav>
 </main>

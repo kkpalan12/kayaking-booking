@@ -12,7 +12,7 @@
         Arial,
         sans-serif;
 
-    color: #073847;
+    color: #173f2d;
 }
 
 .details-page {
@@ -22,9 +22,9 @@
 
     background:
         linear-gradient(180deg,
-            #f2fafc 0%,
+            #f6f8f3 0%,
             #f8fcfd 55%,
-            #eef8fa 100%);
+            #edf4ea 100%);
 }
 
 .details-header {
@@ -46,7 +46,7 @@
 
     margin-bottom: 20px;
 
-    color: #087d95;
+    color: #173f2d;
 
     text-decoration: none;
 
@@ -65,7 +65,7 @@
 
     margin-bottom: 8px;
 
-    color: #168da8;
+    color: #3d7656;
 
     font-size: 8px;
 
@@ -131,7 +131,7 @@
 .status.paid {
     background: #e8f7ef;
 
-    color: #087b50;
+    color: #347450;
 }
 
 .status.pending {
@@ -171,7 +171,7 @@
 .success-banner {
     background: #eaf8f0;
 
-    color: #087b50;
+    color: #347450;
 }
 
 .error-banner {
@@ -209,7 +209,7 @@
 .detail-card h2 {
     margin: 0 0 20px;
 
-    color: #073847;
+    color: #173f2d;
 
     font-size: 22px;
 
@@ -239,7 +239,7 @@
 }
 
 .info-row strong {
-    color: #315661;
+    color: #425a4b;
 
     font-size: 10px;
 
@@ -270,7 +270,7 @@
 
     background: #e9f8f0;
 
-    color: #087b50;
+    color: #347450;
 
     text-decoration: none;
 
@@ -309,11 +309,11 @@
 }
 
 .price-row strong {
-    color: #315661;
+    color: #425a4b;
 }
 
 .price-row.discount strong {
-    color: #087b50;
+    color: #347450;
 }
 
 .price-divider {
@@ -333,7 +333,7 @@
 }
 
 .price-total span {
-    color: #315661;
+    color: #425a4b;
 
     font-size: 11px;
 
@@ -341,7 +341,7 @@
 }
 
 .price-total strong {
-    color: #073847;
+    color: #173f2d;
 
     font-size: 25px;
 
@@ -481,9 +481,9 @@
     width: 26px;
     height: 26px;
 
-    border: 2px solid #d9edf1;
+    border: 2px solid #dbe5d8;
 
-    border-top-color: #168da8;
+    border-top-color: #3d7656;
 
     border-radius: 50%;
 

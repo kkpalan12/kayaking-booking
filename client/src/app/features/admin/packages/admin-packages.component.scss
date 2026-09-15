@@ -12,7 +12,7 @@
         Arial,
         sans-serif;
 
-    color: #073847;
+    color: #173f2d;
 }
 
 .packages-page {
@@ -22,9 +22,9 @@
 
     background:
         linear-gradient(180deg,
-            #f2fafc 0%,
+            #f6f8f3 0%,
             #f8fcfd 50%,
-            #eef8fa 100%);
+            #edf4ea 100%);
 }
 
 
@@ -51,7 +51,7 @@
 
     margin-bottom: 18px;
 
-    color: #087d95;
+    color: #173f2d;
 
     text-decoration: none;
 
@@ -70,7 +70,7 @@
 
     margin-bottom: 8px;
 
-    color: #168da8;
+    color: #3d7656;
 
     font-size: 8px;
 
@@ -116,7 +116,7 @@
 
     border-radius: 12px;
 
-    background: #087d95;
+    background: #173f2d;
 
     color: #ffffff;
 
@@ -159,7 +159,7 @@
 .success-banner {
     background: #eaf8f0;
 
-    color: #087b50;
+    color: #347450;
 }
 
 .error-banner {
@@ -265,7 +265,7 @@
 
     box-sizing: border-box;
 
-    border: 1px solid #d8e8ec;
+    border: 1px solid #dce4da;
 
     border-radius: 11px;
 
@@ -273,7 +273,7 @@
 
     background: #f9fcfd;
 
-    color: #073847;
+    color: #173f2d;
 
     font-family: inherit;
 
@@ -300,7 +300,7 @@
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
-    border-color: #52b7c9;
+    border-color: #6e9d7b;
 
     background: #ffffff;
 
@@ -367,7 +367,7 @@
 }
 
 .secondary-button {
-    border: 1px solid #d8e8ec;
+    border: 1px solid #dce4da;
 
     background: #ffffff;
 
@@ -377,7 +377,7 @@
 .save-button {
     border: 0;
 
-    background: #087d95;
+    background: #173f2d;
 
     color: #ffffff;
 }
@@ -532,7 +532,7 @@
 .package-top h3 {
     margin: 0;
 
-    color: #073847;
+    color: #173f2d;
 
     font-size: 17px;
 
@@ -557,7 +557,7 @@
 }
 
 .price {
-    color: #073847;
+    color: #173f2d;
 
     font-size: 19px;
 
@@ -597,7 +597,7 @@
 
     border-radius: 7px;
 
-    background: #edf8fa;
+    background: #e9f2e6;
 
     color: #08758c;
 
@@ -657,11 +657,11 @@
 }
 
 .edit-button {
-    border: 1px solid #cce7ed;
+    border: 1px solid #d4e2d1;
 
     background: #f2fbfd;
 
-    color: #08738b;
+    color: #2f6d4b;
 }
 
 .delete-button {
@@ -696,7 +696,7 @@
 }
 
 .state strong {
-    color: #315661;
+    color: #425a4b;
 
     font-size: 14px;
 }
@@ -785,7 +785,7 @@
 
     background: #f1fbf5;
 
-    color: #087b50;
+    color: #347450;
 
     cursor: pointer;
 

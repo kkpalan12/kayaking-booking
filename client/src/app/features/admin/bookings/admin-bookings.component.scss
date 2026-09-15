@@ -12,7 +12,7 @@
         Arial,
         sans-serif;
 
-    color: #073847;
+    color: #173f2d;
 }
 
 .admin-bookings-page {
@@ -22,9 +22,9 @@
 
     background:
         linear-gradient(180deg,
-            #f2fafc 0%,
+            #f6f8f3 0%,
             #f8fcfd 55%,
-            #eef8fa 100%);
+            #edf4ea 100%);
 }
 
 .page-header {
@@ -46,7 +46,7 @@
 
     margin-bottom: 10px;
 
-    color: #168da8;
+    color: #3d7656;
 
     font-size: 8px;
 
@@ -70,7 +70,7 @@
 .page-header p {
     margin: 14px 0 0;
 
-    color: #6d858d;
+    color: #6f7e74;
 
     font-size: 12px;
 
@@ -82,13 +82,13 @@
 
     padding: 0 16px;
 
-    border: 1px solid #cce7ed;
+    border: 1px solid #d4e2d1;
 
     border-radius: 999px;
 
     background: #ffffff;
 
-    color: #08738b;
+    color: #2f6d4b;
 
     cursor: pointer;
 
@@ -181,7 +181,7 @@
 
     padding: 0 13px;
 
-    border: 1px solid #dcebee;
+    border: 1px solid #dfe6dd;
 
     border-radius: 11px;
 
@@ -207,7 +207,7 @@
 
     background: transparent;
 
-    color: #073847;
+    color: #173f2d;
 
     font-family: inherit;
 
@@ -220,7 +220,7 @@
 
     padding: 0 11px;
 
-    border: 1px solid #dcebee;
+    border: 1px solid #dfe6dd;
 
     border-radius: 11px;
 
@@ -255,13 +255,13 @@
 }
 
 .clear-button {
-    background: #edf8fa;
+    background: #e9f2e6;
 
-    color: #08738b;
+    color: #2f6d4b;
 }
 
 .export-button {
-    background: #087d95;
+    background: #173f2d;
 
     color: #ffffff;
 }
@@ -287,7 +287,7 @@
 }
 
 .results-bar strong {
-    color: #315661;
+    color: #425a4b;
 
     font-weight: 800;
 }
@@ -342,11 +342,11 @@ td {
 }
 
 .booking-row:hover {
-    background: #f2fafc;
+    background: #f6f8f3;
 }
 
 .booking-id {
-    color: #08738b;
+    color: #2f6d4b;
 
     font-family:
         "SF Mono",
@@ -387,7 +387,7 @@ td {
 }
 
 .amount {
-    color: #073847;
+    color: #173f2d;
 
     font-size: 10px;
 
@@ -418,7 +418,7 @@ td {
 .status.confirmed {
     background: #e8f7ef;
 
-    color: #087b50;
+    color: #347450;
 }
 
 .status.pending {
@@ -459,7 +459,7 @@ td {
 }
 
 .state strong {
-    color: #315661;
+    color: #425a4b;
 
     font-size: 14px;
 }
@@ -474,9 +474,9 @@ td {
 
     border-radius: 50%;
 
-    background: #edf8fa;
+    background: #e9f2e6;
 
-    color: #168da8;
+    color: #3d7656;
 
     font-size: 23px;
 }
@@ -485,9 +485,9 @@ td {
     width: 25px;
     height: 25px;
 
-    border: 2px solid #d9edf1;
+    border: 2px solid #dbe5d8;
 
-    border-top-color: #168da8;
+    border-top-color: #3d7656;
 
     border-radius: 50%;
 
@@ -522,7 +522,7 @@ td {
 
     padding: 0 12px;
 
-    border: 1px solid #dcebee;
+    border: 1px solid #dfe6dd;
 
     border-radius: 10px;
 
@@ -563,7 +563,7 @@ td {
 
     background: transparent;
 
-    color: #6d858d;
+    color: #6f7e74;
 
     cursor: pointer;
 
@@ -575,11 +575,11 @@ td {
 }
 
 .page-numbers button:hover {
-    background: #edf8fa;
+    background: #e9f2e6;
 }
 
 .page-numbers button.active {
-    background: #087d95;
+    background: #173f2d;
 
     color: #ffffff;
 }
