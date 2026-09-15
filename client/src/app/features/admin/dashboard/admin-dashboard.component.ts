@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 
 import { Component, inject, OnInit } from '@angular/core';
 
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { BookingService } from '../../../core/services/booking.service';
 
@@ -20,7 +20,7 @@ type DateFilter = 'ALL' | 'TODAY' | 'TOMORROW' | 'THIS_WEEK' | 'CUSTOM';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminNavComponent],
+  imports: [CommonModule, AdminNavComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
 })

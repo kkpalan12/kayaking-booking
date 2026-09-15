@@ -1,27 +1,79 @@
 <app-admin-nav></app-admin-nav>
-<main class="admin-page">
-  <header class="admin-header"><div><span class="eyebrow">ADMIN CONSOLE</span><h1>Good morning. Here's River Edge.</h1><p>Keep today's adventures moving smoothly.</p></div><button type="button" class="refresh-button" (click)="loadBookings()" [disabled]="loading">↻ Refresh</button></header>
-  @if (error) { <div class="error-banner"><span>{{ error }}</span><button type="button" (click)="loadBookings()">Try again</button></div> }
 
-  <section class="stats-grid">
-    <article class="stat-card"><span>BOOKINGS</span><strong>{{ totalBookings }}</strong><small>All time</small></article>
-    <article class="stat-card"><span>TODAY</span><strong>{{ todayBookings }}</strong><small>{{ upcomingBookings }} upcoming active</small></article>
-    <article class="stat-card accent"><span>PAID REVENUE</span><strong>{{ formatCurrency(paidRevenue) }}</strong><small>{{ paidBookings }} paid bookings</small></article>
-    <article class="stat-card"><span>NEEDS ATTENTION</span><strong>{{ pendingPayments + pendingBookings }}</strong><small>Pending payment / booking</small></article>
+<main class="dashboard">
+  <header class="hero">
+    <div>
+      <span class="eyebrow">OPERATIONS OVERVIEW</span>
+      <h1>Good day. Here's your river.</h1>
+      <p>Keep today's adventures, guests and payments moving smoothly.</p>
+    </div>
+    <button type="button" class="refresh" (click)="loadBookings()" [disabled]="loading"><span>↻</span>{{ loading ? 'Refreshing' : 'Refresh' }}</button>
+  </header>
+
+  @if (error) {
+    <div class="alert"><span>{{ error }}</span><button type="button" (click)="loadBookings()">Try again</button></div>
+  }
+
+  <section class="kpi-grid" aria-label="Booking summary">
+    <article class="kpi featured"><div class="kpi-top"><span>Total bookings</span><i>01</i></div><strong>{{ totalBookings }}</strong><small>All time</small></article>
+    <article class="kpi"><div class="kpi-top"><span>Today</span><i>02</i></div><strong>{{ todayBookings }}</strong><small>Bookings for today</small></article>
+    <article class="kpi"><div class="kpi-top"><span>Paid revenue</span><i>03</i></div><strong>{{ formatCurrency(paidRevenue) }}</strong><small>Successful payments</small></article>
+    <article class="kpi"><div class="kpi-top"><span>Upcoming</span><i>04</i></div><strong>{{ upcomingBookings }}</strong><small>Active upcoming trips</small></article>
   </section>
 
-  <section class="overview-grid">
-    <div class="status-panel"><div class="panel-heading"><div><span class="eyebrow">OPERATIONS</span><h2>Booking health</h2></div><span class="live-dot">Live data</span></div><div class="status-list"><div><span class="dot confirmed"></span><span>Confirmed</span><strong>{{ confirmedBookings }}</strong></div><div><span class="dot pending"></span><span>Pending</span><strong>{{ pendingBookings }}</strong></div><div><span class="dot paid"></span><span>Paid</span><strong>{{ paidBookings }}</strong></div><div><span class="dot warning"></span><span>Payment pending</span><strong>{{ pendingPayments }}</strong></div><div><span class="dot cancelled"></span><span>Cancelled</span><strong>{{ cancelledBookings }}</strong></div></div></div>
-    <div class="action-panel"><span class="eyebrow">QUICK ACTIONS</span><h2>Run the day</h2><div class="quick-actions"><a routerLink="/admin/bookings">View bookings <span>→</span></a><a routerLink="/admin/packages">Manage experiences <span>→</span></a><button type="button" (click)="exportCsv()" [disabled]="filteredBookings.length===0">Export filtered CSV <span>↓</span></button></div></div>
+  <section class="status-strip" aria-label="Status summary">
+    <div><span class="dot confirmed"></span><strong>{{ confirmedBookings }}</strong><small>Confirmed</small></div>
+    <div><span class="dot pending"></span><strong>{{ pendingBookings }}</strong><small>Pending</small></div>
+    <div><span class="dot paid"></span><strong>{{ paidBookings }}</strong><small>Paid</small></div>
+    <div><span class="dot warning"></span><strong>{{ pendingPayments }}</strong><small>Payment pending</small></div>
+    <div><span class="dot cancelled"></span><strong>{{ cancelledBookings }}</strong><small>Cancelled</small></div>
   </section>
 
-  <section class="bookings-section"><div class="section-header"><div><span class="eyebrow">RECENT BOOKINGS</span><h2>Latest activity</h2></div><span class="result-count">{{ filteredBookings.length }} result{{ filteredBookings.length === 1 ? '' : 's' }}</span></div>
-    <div class="filters"><label class="search-box">⌕<input type="search" placeholder="Search booking, customer, phone…" [value]="searchTerm" (input)="searchTerm=$any($event.target).value" /></label><select [value]="bookingStatus" (change)="setBookingStatus($any($event.target).value)"><option value="ALL">All booking status</option><option value="CONFIRMED">Confirmed</option><option value="PENDING">Pending</option><option value="CANCELLED">Cancelled</option></select><select [value]="paymentStatus" (change)="setPaymentStatus($any($event.target).value)"><option value="ALL">All payments</option><option value="PAID">Paid</option><option value="PENDING">Pending</option><option value="FAILED">Failed</option><option value="REFUNDED">Refunded</option></select><select [value]="dateFilter" (change)="setDateFilter($any($event.target).value)"><option value="ALL">All dates</option><option value="TODAY">Today</option><option value="TOMORROW">Tomorrow</option><option value="THIS_WEEK">This week</option><option value="CUSTOM">Custom date</option></select>@if(dateFilter==='CUSTOM'){<input class="date-filter" type="date" [value]="customDate" (change)="setCustomDate($any($event.target).value)" />}@if(searchTerm||bookingStatus!=='ALL'||paymentStatus!=='ALL'||dateFilter!=='ALL'){<button type="button" class="clear-button" (click)="clearFilters()">Clear</button>}<button type="button" class="export-button" (click)="exportCsv()" [disabled]="filteredBookings.length===0">↓ Export CSV</button></div>
-    @if (loading) { <div class="table-state"><div class="spinner"></div><span>Loading bookings…</span></div> }
-    @else if(filteredBookings.length===0){<div class="table-state empty"><strong>No bookings found</strong><span>Try changing your search or filters.</span></div>}
-    @else {
-      <div class="desktop-table"><table><thead><tr><th>BOOKING</th><th>CUSTOMER</th><th>EXPERIENCE</th><th>DATE</th><th>AMOUNT</th><th>PAYMENT</th><th>STATUS</th></tr></thead><tbody>@for(booking of recentBookings;track booking.bookingId){<tr (click)="openBooking(booking.bookingId)"><td><strong class="booking-id">{{booking.bookingId}}</strong></td><td><div class="cell-stack"><strong>{{booking.customerName}}</strong><span>{{booking.customerPhone}}</span></div></td><td><div class="cell-stack"><strong>{{booking.packageName}}</strong><span>{{booking.quantity}} {{booking.quantity===1?'person':'people'}}</span></div></td><td><div class="cell-stack"><strong>{{formatDate(booking.bookingDate)}}</strong><span>{{booking.timeSlot}}</span></div></td><td><strong>{{formatCurrency(booking.totalAmount)}}</strong></td><td><span class="status" [class.paid]="booking.paymentStatus==='PAID'" [class.pending]="booking.paymentStatus==='PENDING'" [class.failed]="booking.paymentStatus==='FAILED'">{{booking.paymentStatus}}</span></td><td><span class="status" [class.confirmed]="booking.bookingStatus==='CONFIRMED'" [class.pending]="booking.bookingStatus==='PENDING'" [class.cancelled]="booking.bookingStatus==='CANCELLED'">{{booking.bookingStatus}}</span></td></tr>}</tbody></table></div>
-      <div class="mobile-bookings">@for(booking of recentBookings;track booking.bookingId){<article (click)="openBooking(booking.bookingId)"><div class="mobile-booking-top"><strong>{{booking.customerName}}</strong><span class="status" [class.paid]="booking.paymentStatus==='PAID'" [class.pending]="booking.paymentStatus==='PENDING'" [class.failed]="booking.paymentStatus==='FAILED'">{{booking.paymentStatus}}</span></div><p>{{booking.packageName}} · {{booking.quantity}} {{booking.quantity===1?'person':'people'}}</p><div><span>{{formatDate(booking.bookingDate)}} · {{booking.timeSlot}}</span><strong>{{formatCurrency(booking.totalAmount)}}</strong></div><small>{{booking.bookingId}}</small></article>}</div>
+  <section class="bookings-card">
+    <div class="section-head">
+      <div><span class="eyebrow">BOOKINGS</span><h2>Recent activity</h2><p>Search and manage your latest guest reservations.</p></div>
+      <span class="count">{{ filteredBookings.length }} result{{ filteredBookings.length === 1 ? '' : 's' }}</span>
+    </div>
+
+    <div class="filters">
+      <label class="search"><span>⌕</span><input type="search" placeholder="Search booking, guest or phone" [value]="searchTerm" (input)="searchTerm=$any($event.target).value" /></label>
+      <select [value]="bookingStatus" (change)="setBookingStatus($any($event.target).value)"><option value="ALL">All booking status</option><option value="CONFIRMED">Confirmed</option><option value="PENDING">Pending</option><option value="CANCELLED">Cancelled</option></select>
+      <select [value]="paymentStatus" (change)="setPaymentStatus($any($event.target).value)"><option value="ALL">All payments</option><option value="PAID">Paid</option><option value="PENDING">Pending</option><option value="FAILED">Failed</option><option value="REFUNDED">Refunded</option></select>
+      <select [value]="dateFilter" (change)="setDateFilter($any($event.target).value)"><option value="ALL">All dates</option><option value="TODAY">Today</option><option value="TOMORROW">Tomorrow</option><option value="THIS_WEEK">This week</option><option value="CUSTOM">Custom date</option></select>
+      @if (dateFilter === 'CUSTOM') { <input class="date-input" type="date" [value]="customDate" (change)="setCustomDate($any($event.target).value)" aria-label="Select custom booking date" /> }
+      @if (searchTerm || bookingStatus !== 'ALL' || paymentStatus !== 'ALL' || dateFilter !== 'ALL') { <button type="button" class="clear" (click)="clearFilters()">Clear</button> }
+      <button type="button" class="export" (click)="exportCsv()" [disabled]="filteredBookings.length===0">↓ Export</button>
+    </div>
+
+    @if (loading) {
+      <div class="state"><div class="spinner"></div><strong>Loading bookings</strong><span>Getting the latest reservations…</span></div>
+    } @else if (filteredBookings.length === 0) {
+      <div class="state"><div class="empty-icon">⌕</div><strong>No bookings found</strong><span>Try changing your search or filters.</span></div>
+    } @else {
+      <div class="desktop-table">
+        <table><thead><tr><th>BOOKING</th><th>GUEST</th><th>EXPERIENCE</th><th>DATE</th><th>AMOUNT</th><th>PAYMENT</th><th>STATUS</th></tr></thead>
+          <tbody>@for (booking of recentBookings; track booking.bookingId) {<tr (click)="openBooking(booking.bookingId)">
+            <td><strong class="id">{{ booking.bookingId }}</strong></td>
+            <td><div class="cell"><strong>{{ booking.customerName }}</strong><span>{{ booking.customerPhone }}</span></div></td>
+            <td><div class="cell"><strong>{{ booking.packageName }}</strong><span>{{ booking.quantity }} {{ booking.quantity === 1 ? 'person' : 'people' }}</span></div></td>
+            <td><div class="cell"><strong>{{ formatDate(booking.bookingDate) }}</strong><span>{{ booking.timeSlot }}</span></div></td>
+            <td><strong class="amount">{{ formatCurrency(booking.totalAmount) }}</strong></td>
+            <td><span class="badge payment" [class.paid]="booking.paymentStatus==='PAID'" [class.pending]="booking.paymentStatus==='PENDING'" [class.failed]="booking.paymentStatus==='FAILED'" [class.refunded]="booking.paymentStatus==='REFUNDED'">{{ booking.paymentStatus }}</span></td>
+            <td><span class="badge booking" [class.confirmed]="booking.bookingStatus==='CONFIRMED'" [class.pending]="booking.bookingStatus==='PENDING'" [class.cancelled]="booking.bookingStatus==='CANCELLED'">{{ booking.bookingStatus }}</span></td>
+          </tr>}</tbody>
+        </table>
+      </div>
+      <div class="mobile-list">
+        @for (booking of recentBookings; track booking.bookingId) {<button type="button" class="booking-card" (click)="openBooking(booking.bookingId)">
+          <div class="booking-card-head"><span class="id">{{ booking.bookingId }}</span><span class="badge booking" [class.confirmed]="booking.bookingStatus==='CONFIRMED'" [class.pending]="booking.bookingStatus==='PENDING'" [class.cancelled]="booking.bookingStatus==='CANCELLED'">{{ booking.bookingStatus }}</span></div>
+          <strong>{{ booking.customerName }}</strong><span class="muted">{{ booking.packageName }} · {{ booking.quantity }} {{ booking.quantity === 1 ? 'person' : 'people' }}</span>
+          <div class="booking-card-bottom"><span>{{ formatDate(booking.bookingDate) }} · {{ booking.timeSlot }}</span><strong>{{ formatCurrency(booking.totalAmount) }}</strong></div>
+          <span class="badge payment" [class.paid]="booking.paymentStatus==='PAID'" [class.pending]="booking.paymentStatus==='PENDING'" [class.failed]="booking.paymentStatus==='FAILED'" [class.refunded]="booking.paymentStatus==='REFUNDED'">{{ booking.paymentStatus }}</span>
+        </button>}
+      </div>
+      @if (filteredBookings.length > 10) {<div class="table-footer">Showing the 10 most recent bookings from the current filter.</div>}
     }
   </section>
+
+  <aside class="security"><span>🔒</span><div><strong>Protected admin workspace</strong><p>Booking management is available only to authenticated administrators. Customer booking remains public.</p></div></aside>
 </main>

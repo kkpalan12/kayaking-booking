@@ -1,0 +1,185 @@
+<main class="experiences-page">
+  <header class="experience-header">
+    <div class="header-inner">
+      <a routerLink="/" class="brand" aria-label="River Edge home">
+        <span class="brand-mark" aria-hidden="true">RE</span>
+        <span class="brand-copy">
+          <strong>RIVER EDGE</strong>
+          <small>MANGROVE EXPERIENCES</small>
+        </span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a routerLink="/">Home</a>
+        <a class="active" routerLink="/experiences">Experiences</a>
+        <a routerLink="/" fragment="why-us">Why Us</a>
+        <a routerLink="/" fragment="reviews">Reviews</a>
+        <a routerLink="/" fragment="location">Find Us</a>
+      </nav>
+
+      <a routerLink="/experiences" class="header-cta">Book now <span>↗</span></a>
+    </div>
+  </header>
+
+  <section class="intro">
+    <div class="intro-inner">
+      <div class="intro-copy">
+        <span class="eyebrow">RIVER EDGE · EXPERIENCES</span>
+        <h1>Choose your<br /><em>way to explore.</em></h1>
+        <p>
+          Quiet waterways, living mangroves and guided experiences designed for
+          first-timers, families and curious explorers.
+        </p>
+      </div>
+
+      <div class="intro-note">
+        <span>01</span>
+        <strong>Pick an experience.</strong>
+        <small>Choose your date and time next.</small>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog" aria-labelledby="catalog-title">
+    <div class="catalog-head">
+      <div>
+        <span class="eyebrow">THE COLLECTION</span>
+        <h2 id="catalog-title">Find your perfect adventure.</h2>
+      </div>
+      <p>{{ filteredPackages.length }} experience{{ filteredPackages.length === 1 ? '' : 's' }} available</p>
+    </div>
+
+    <div class="filters" role="group" aria-label="Experience filters">
+      <button type="button" [class.active]="activeFilter === 'ALL'" (click)="setFilter('ALL')">
+        All experiences
+      </button>
+      <button type="button" [class.active]="activeFilter === 'PER_PERSON'" (click)="setFilter('PER_PERSON')">
+        Per person
+      </button>
+      <button type="button" [class.active]="activeFilter === 'PER_BOOKING'" (click)="setFilter('PER_BOOKING')">
+        Per booking
+      </button>
+      <button type="button" [class.active]="activeFilter === 'OFFERS'" (click)="setFilter('OFFERS')">
+        Offers
+      </button>
+    </div>
+
+    @if (loading) {
+      <div class="experience-grid" aria-live="polite" aria-label="Loading experiences">
+        @for (item of [1, 2, 3, 4]; track item) {
+          <div class="skeleton-card">
+            <div class="skeleton-image"></div>
+            <div class="skeleton-line wide"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line short"></div>
+            <div class="skeleton-footer"></div>
+          </div>
+        }
+      </div>
+    } @else if (error) {
+      <div class="state-card">
+        <div class="state-icon">!</div>
+        <div>
+          <strong>We couldn't load the experiences.</strong>
+          <span>Please try again.</span>
+        </div>
+        <button type="button" (click)="loadPackages()">Try again</button>
+      </div>
+    } @else if (filteredPackages.length > 0) {
+      <div class="experience-grid">
+        @for (package of filteredPackages; track trackById($index, package)) {
+          <article class="experience-card">
+            <div class="card-media">
+              @if (package.image) {
+                <img [src]="package.image" [alt]="package.name" loading="lazy" />
+              } @else {
+                <div class="image-fallback" aria-hidden="true">
+                  <span>🛶</span>
+                  <small>River Edge</small>
+                </div>
+              }
+
+              <div class="media-overlay"></div>
+
+              @if (hasDiscount(package)) {
+                <span class="offer-badge">{{ getDiscountText(package) }}</span>
+              }
+
+              <span class="experience-index">{{ ($index + 1).toString().padStart(2, '0') }}</span>
+            </div>
+
+            <div class="card-body">
+              <div class="card-kicker">RIVER EXPERIENCE</div>
+              <div class="title-row">
+                <h3>{{ package.name }}</h3>
+                <span class="round-arrow" aria-hidden="true">↗</span>
+              </div>
+
+              <div class="facts">
+                <span><i aria-hidden="true">◷</i>{{ getDurationLabel(package) }}</span>
+                <span><i aria-hidden="true">◉</i>{{ getPricingLabel(package) }}</span>
+              </div>
+
+              @if (package.description) {
+                <p>{{ package.description }}</p>
+              } @else {
+                <p>Explore the mangroves with a calm, guided River Edge experience.</p>
+              }
+
+              <div class="card-bottom">
+                <div class="price">
+                  <strong>₹{{ getDiscountedPrice(package) | number:'1.0-0' }}</strong>
+                  <span>{{ getPricingLabel(package) }}</span>
+                  @if (hasDiscount(package)) {
+                    <del>₹{{ package.price | number:'1.0-0' }}</del>
+                  }
+                </div>
+
+                <button type="button" class="book-button" (click)="bookNow(package)">
+                  View & book <span>→</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    } @else {
+      <div class="state-card empty-state">
+        <div class="state-icon">—</div>
+        <div>
+          <strong>No experiences match this filter.</strong>
+          <span>Try another option.</span>
+        </div>
+        <button type="button" (click)="setFilter('ALL')">View all</button>
+      </div>
+    }
+  </section>
+
+  <section class="booking-strip">
+    <div>
+      <span class="eyebrow light">READY WHEN YOU ARE</span>
+      <h2>Your next adventure starts here.</h2>
+      <p>Choose an experience, select your time and we'll take care of the rest.</p>
+    </div>
+    <a routerLink="/" fragment="experiences" class="strip-button">Back to home <span>→</span></a>
+  </section>
+
+  <footer class="footer">
+    <a routerLink="/" class="brand" aria-label="River Edge home">
+      <span class="brand-mark">RE</span>
+      <span class="brand-copy">
+        <strong>RIVER EDGE</strong>
+        <small>MANGROVE EXPERIENCES</small>
+      </span>
+    </a>
+    <span>Nature today. Brighter tomorrows. 🌿</span>
+  </footer>
+
+  <nav class="mobile-nav" aria-label="Mobile navigation">
+    <a routerLink="/"><span>⌂</span><small>Home</small></a>
+    <a class="active" routerLink="/experiences"><span>◉</span><small>Explore</small></a>
+    <a class="mobile-book" routerLink="/experiences"><span>＋</span><small>Book</small></a>
+    <a routerLink="/" fragment="reviews"><span>★</span><small>Reviews</small></a>
+    <a routerLink="/" fragment="location"><span>⌖</span><small>Find Us</small></a>
+  </nav>
+</main>

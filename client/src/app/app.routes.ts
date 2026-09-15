@@ -11,6 +11,14 @@ export const routes: Routes = [
   },
 
   {
+    path: 'experiences',
+    loadComponent: () =>
+      import('./features/experiences/experiences.component').then(
+        (m) => m.ExperiencesComponent,
+      ),
+  },
+
+  {
     path: 'booking/:id',
     loadComponent: () =>
       import('./features/booking/booking.component').then(

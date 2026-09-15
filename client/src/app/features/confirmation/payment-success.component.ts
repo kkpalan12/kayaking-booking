@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 

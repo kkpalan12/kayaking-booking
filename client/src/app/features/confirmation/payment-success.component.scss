@@ -484,3 +484,39 @@ h1 {
 
     cursor: wait;
 }
+/* v7 readability + River Edge visual alignment */
+.payment-page p,
+.payment-copy p,
+.processing-copy,
+.status-note,
+.detail-label,
+.next-step-copy,
+.support-copy { color: #52675f; }
+.payment-page h1,
+.payment-page h2,
+.payment-page h3 { color: #173d32; }
+.detail-value,
+.booking-reference,
+.total-value { color: #173d32; }
+.primary-action,
+.retry-button { background: #174b3c; }
+.primary-action:hover,
+.retry-button:hover { background: #103c30; }
+.success-icon { background: #e7f3e9; color: #17603f; }
+
+/* Phase 12 global polish */
+.payment-page { color: #173d32; }
+.payment-page p,
+.processing-copy,
+.status-note,
+.detail-label,
+.next-step-copy,
+.support-copy { line-height: 1.6; }
+.primary-action,
+.retry-button { min-height: 50px; }
+.secondary-action { min-height: 48px; }
+
+@media (max-width: 600px) {
+  .payment-page { min-height: 100svh; padding-bottom: max(28px, env(safe-area-inset-bottom)); }
+  .payment-card { width: 100%; }
+}

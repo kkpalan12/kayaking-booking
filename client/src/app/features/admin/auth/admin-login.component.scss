@@ -12,7 +12,7 @@
         Arial,
         sans-serif;
 
-    color: #173f2d;
+    color: #073847;
 }
 
 .admin-login-page {
@@ -169,7 +169,7 @@
 }
 
 .brand-text strong {
-    color: #173f2d;
+    color: #073847;
 
     font-size: 13px;
 
@@ -216,7 +216,7 @@
 .login-header h1 {
     margin: 0;
 
-    color: #173f2d;
+    color: #073847;
 
     font-size: 39px;
 
@@ -261,7 +261,7 @@ form {
 }
 
 .field label {
-    color: #425a4b;
+    color: #315661;
 
     font-size: 10px;
 
@@ -285,7 +285,7 @@ form {
 
     background: #f9fcfd;
 
-    color: #173f2d;
+    color: #073847;
 
     font-family: inherit;
 
@@ -302,7 +302,7 @@ form {
 }
 
 .field input:focus {
-    border-color: #6e9d7b;
+    border-color: #52b7c9;
 
     background: white;
 
@@ -426,7 +426,7 @@ form {
 
     background:
         linear-gradient(135deg,
-            #173f2d,
+            #087d95,
             #086a7e);
 
     color: white;
@@ -552,3 +552,16 @@ form {
     }
 
 }
+/* v7 admin readability */
+.admin-login-page { color: #173d32; }
+.admin-login-page label { color: #294d40; font-weight: 700; }
+.admin-login-page input { color: #173d32; }
+.admin-login-page input::placeholder { color: #74867e; }
+.admin-login-page .helper,
+.admin-login-page small { color: #52675f; }
+
+/* Phase 12 global polish */
+.admin-login-page input { min-height: 48px; font-size: 13px; }
+.admin-login-page label { font-size: 11px; }
+.admin-login-page .helper,
+.admin-login-page small { line-height: 1.5; }

@@ -1,509 +1,184 @@
 <app-admin-nav></app-admin-nav>
 
 <main class="packages-page">
+  <header class="page-header">
+    <div class="header-copy">
+      <a routerLink="/admin" class="back-link">← Dashboard</a>
+      <span class="eyebrow">ADMIN · EXPERIENCES</span>
+      <h1>Packages</h1>
+      <p>Manage the experiences customers can book.</p>
+    </div>
 
-    <!-- HEADER -->
+    <button type="button" class="primary-button" (click)="openCreate()">
+      <span aria-hidden="true">+</span>
+      Add experience
+    </button>
+  </header>
 
-    <header class="packages-header">
+  @if (successMessage) {
+    <div class="notice success" role="status">✓ {{ successMessage }}</div>
+  }
+  @if (error) {
+    <div class="notice error" role="alert">{{ error }}</div>
+  }
 
+  @if (showForm) {
+    <section class="editor-card" aria-labelledby="editor-title">
+      <div class="editor-header">
         <div>
-
-            <a routerLink="/admin" class="back-link">
-                ← Dashboard
-            </a>
-
-            <span class="eyebrow">
-                ADMIN · EXPERIENCES
-            </span>
-
-            <h1>
-                Packages
-            </h1>
-
-            <p>
-                Manage your River Edge kayaking
-                experiences and offers.
-            </p>
-
+          <span class="section-kicker">{{ editingId ? 'EDIT EXPERIENCE' : 'NEW EXPERIENCE' }}</span>
+          <h2 id="editor-title">{{ editingId ? 'Update package' : 'Create package' }}</h2>
+          <p>Keep the customer-facing details simple and accurate.</p>
         </div>
-
-
-        <button type="button" class="create-button" (click)="openCreate()">
-            <span>+</span>
-            Add package
-        </button>
-
-    </header>
-
-
-    <!-- MESSAGES -->
-
-    @if (successMessage) {
-
-    <div class="success-banner">
-        ✓ {{ successMessage }}
-    </div>
-
-    }
-
-    @if (error) {
-
-    <div class="error-banner">
-        {{ error }}
-    </div>
-
-    }
-
-
-    <!-- FORM -->
-
-    @if (showForm) {
-
-    <section class="form-card">
-
-        <div class="form-header">
-
-            <div>
-
-                <span class="card-eyebrow">
-                    {{
-                    editingId
-                    ? 'EDIT PACKAGE'
-                    : 'NEW PACKAGE'
-                    }}
-                </span>
-
-                <h2>
-                    {{
-                    editingId
-                    ? 'Update experience'
-                    : 'Create experience'
-                    }}
-                </h2>
-
-            </div>
-
-            <button type="button" class="close-button" (click)="cancelForm()">
-                ×
-            </button>
-
-        </div>
-
-
-        <form [formGroup]="packageForm" (ngSubmit)="savePackage()" novalidate>
-
-            <div class="form-grid">
-
-                <!-- NAME -->
-
-                <div class="field">
-
-                    <label for="name">
-                        Package name
-                    </label>
-
-                    <input id="name" type="text" formControlName="name" placeholder="Mangrove Kayaking" />
-
-                    @if (
-                    packageForm.controls.name.invalid &&
-                    packageForm.controls.name.touched
-                    ) {
-
-                    <small>
-                        Package name is required.
-                    </small>
-
-                    }
-
-                </div>
-
-
-                <!-- SLUG -->
-
-                <div class="field">
-
-                    <label for="slug">
-                        Slug
-                    </label>
-
-                    <input id="slug" type="text" formControlName="slug" placeholder="mangrove-kayaking" />
-
-                </div>
-
-
-                <!-- PRICE -->
-
-                <div class="field">
-
-                    <label for="price">
-                        Price
-                    </label>
-
-                    <input id="price" type="number" min="0" formControlName="price" placeholder="500" />
-
-                </div>
-
-
-                <!-- PRICING -->
-
-                <div class="field">
-
-                    <label for="pricingType">
-                        Pricing type
-                    </label>
-
-                    <select id="pricingType" formControlName="pricingType">
-
-                        <option value="PER_PERSON">
-                            Per person
-                        </option>
-
-                        <option value="PER_BOOKING">
-                            Per booking
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- DURATION -->
-
-                <div class="field">
-
-                    <label for="duration">
-                        Duration
-                    </label>
-
-                    <input id="duration" type="text" formControlName="duration" placeholder="1 hour" />
-
-                </div>
-
-
-                <!-- IMAGE -->
-
-                <div class="field">
-
-                    <label for="image">
-                        Image URL
-                    </label>
-
-                    <input id="image" type="url" formControlName="image" placeholder="https://..." />
-
-                </div>
-
-
-                <!-- DISCOUNT -->
-
-                <div class="field full">
-
-                    <label class="switch-row">
-
-                        <input type="checkbox" formControlName="discountEnabled" />
-
-                        <span>
-                            Enable discount
-                        </span>
-
-                    </label>
-
-                </div>
-
-
-                @if (
-                packageForm.controls
-                .discountEnabled.value
-                ) {
-
-                <div class="field">
-
-                    <label for="discountType">
-                        Discount type
-                    </label>
-
-                    <select id="discountType" formControlName="discountType">
-
-                        <option value="PERCENTAGE">
-                            Percentage
-                        </option>
-
-                        <option value="FIXED">
-                            Fixed amount
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="field">
-
-                    <label for="discountValue">
-                        Discount value
-                    </label>
-
-                    <input id="discountValue" type="number" min="0" formControlName="discountValue" />
-
-                </div>
-
-                }
-
-
-                <!-- DESCRIPTION -->
-
-                <div class="field full">
-
-                    <label for="description">
-                        Description
-                    </label>
-
-                    <textarea id="description" rows="4" formControlName="description"
-                        placeholder="Describe the kayaking experience..."></textarea>
-
-                </div>
-
-
-                <!-- ACTIVE -->
-
-                <div class="field full">
-
-                    <label class="switch-row">
-
-                        <input type="checkbox" formControlName="isActive" />
-
-                        <span>
-                            Package is active and visible to customers
-                        </span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <div class="form-actions">
-
-                <button type="button" class="secondary-button" (click)="cancelForm()">
-                    Cancel
-                </button>
-
-                <button type="submit" class="save-button" [disabled]="
-              packageForm.invalid ||
-              saving
-            ">
-
-                    @if (saving) {
-
-                    Saving...
-
-                    } @else {
-
-                    {{
-                    editingId
-                    ? 'Save changes'
-                    : 'Create package'
-                    }}
-
-                    }
-
-                </button>
-
-            </div>
-
-        </form>
-
-    </section>
-
-    }
-
-
-    <!-- PACKAGE LIST -->
-
-    <section class="package-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span class="card-eyebrow">
-                    EXPERIENCES
-                </span>
-
-                <h2>
-                    All packages
-                </h2>
-
-            </div>
-
-            <span class="package-count">
-                {{ packages.length }} packages
-            </span>
-
-        </div>
-
-
-        @if (loading) {
-
-        <div class="state">
-            Loading packages...
-        </div>
-
-        }
-
-        @else if (packages.length === 0) {
-
-        <div class="state">
-
-            <strong>
-                No packages yet
-            </strong>
-
-            <span>
-                Create your first experience.
-            </span>
-
-        </div>
-
-        }
-
-        @else {
-
-        <div class="package-grid">
-
-            @for (
-            package of packages;
-            track package._id
-            ) {
-
-            <article class="package-card" [class.inactive]="
-              !package.isActive
-            ">
-
-                <div class="package-image">
-
-                    @if (getImage(package)) {
-
-                    <img [src]="getImage(package)" [alt]="package.name" />
-
-                    } @else {
-
-                    <div class="image-placeholder">
-                        🛶
-                    </div>
-
-                    }
-
-
-                    @if (!package.isActive) {
-
-                    <span class="inactive-badge">
-                        INACTIVE
-                    </span>
-
-                    }
-
-                </div>
-
-
-                <div class="package-content">
-
-                    <div class="package-top">
-
-                        <div>
-
-                            <h3>
-                                {{ package.name }}
-                            </h3>
-
-                            <span class="slug">
-                                /{{ package.slug }}
-                            </span>
-
-                        </div>
-
-                        <strong class="price">
-                            ₹{{ package.price }}
-                        </strong>
-
-                    </div>
-
-
-                    @if (package.description) {
-
-                    <p class="description">
-                        {{ package.description }}
-                    </p>
-
-                    }
-
-
-                    <div class="package-meta">
-
-                        <span>
-                            {{
-                            package.pricingType ===
-                            'PER_PERSON'
-                            ? 'Per person'
-                            : 'Per booking'
-                            }}
-                        </span>
-
-                        @if (package.duration) {
-
-                        <span>
-                            ⏱ {{ package.duration }}
-                        </span>
-
-                        }
-
-                    </div>
-
-
-                    <div class="package-offer">
-
-                        {{ getDiscountText(package) }}
-
-                    </div>
-
-
-                    <div class="package-actions">
-
-                        <button type="button" class="edit-button" (click)="editPackage(package)">
-                            Edit
-                        </button>
-
-
-                        @if (package.isActive) {
-
-                        <button type="button" class="delete-button" (click)="
-                      deactivatePackage(package)
-                    ">
-                            Deactivate
-                        </button>
-
-                        } @else {
-
-                        <button type="button" class="activate-button" (click)="
-                      activatePackage(package)
-                    ">
-                            Activate
-                        </button>
-
-                        }
-
-                    </div>
-
-                </div>
-
-            </article>
-
+        <button type="button" class="icon-button" aria-label="Close editor" (click)="cancelForm()">×</button>
+      </div>
+
+      <form [formGroup]="packageForm" (ngSubmit)="savePackage()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Experience name</label>
+            <input id="name" type="text" formControlName="name" placeholder="Mangrove Kayaking" autocomplete="off" />
+            @if (packageForm.controls.name.invalid && packageForm.controls.name.touched) {
+              <small>Enter at least 2 characters.</small>
             }
+          </div>
 
+          <div class="field">
+            <label for="slug">URL slug</label>
+            <input id="slug" type="text" formControlName="slug" placeholder="mangrove-kayaking" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <label for="price">Base price</label>
+            <div class="input-prefix"><span>₹</span><input id="price" type="number" min="0" formControlName="price" placeholder="799" /></div>
+          </div>
+
+          <div class="field">
+            <label for="pricingType">Price applies</label>
+            <select id="pricingType" formControlName="pricingType">
+              <option value="PER_PERSON">Per person</option>
+              <option value="PER_BOOKING">Per booking</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="duration">Duration</label>
+            <input id="duration" type="text" formControlName="duration" placeholder="1.5 hours" />
+          </div>
+
+          <div class="field">
+            <label for="image">Image URL</label>
+            <input id="image" type="url" formControlName="image" placeholder="https://..." inputmode="url" />
+          </div>
+
+          <div class="field full">
+            <label class="toggle-row">
+              <input type="checkbox" formControlName="discountEnabled" />
+              <span><strong>Offer enabled</strong><small>Show a discount on the experience.</small></span>
+            </label>
+          </div>
+
+          @if (packageForm.controls.discountEnabled.value) {
+            <div class="field">
+              <label for="discountType">Discount type</label>
+              <select id="discountType" formControlName="discountType">
+                <option value="PERCENTAGE">Percentage</option>
+                <option value="FIXED">Fixed amount</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="discountValue">Discount value</label>
+              <input id="discountValue" type="number" min="0" formControlName="discountValue" placeholder="10" />
+            </div>
+          }
+
+          <div class="field full">
+            <label for="description">Description</label>
+            <textarea id="description" rows="4" formControlName="description" placeholder="Describe what guests will experience..."></textarea>
+          </div>
+
+          <div class="field full">
+            <label class="toggle-row">
+              <input type="checkbox" formControlName="isActive" />
+              <span><strong>Visible to customers</strong><small>Inactive experiences remain available to admins and existing bookings.</small></span>
+            </label>
+          </div>
         </div>
 
-        }
-
+        <div class="form-actions">
+          <button type="button" class="secondary-button" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="primary-button" [disabled]="packageForm.invalid || saving">
+            {{ saving ? 'Saving…' : (editingId ? 'Save changes' : 'Create experience') }}
+          </button>
+        </div>
+      </form>
     </section>
+  }
 
+  <section class="catalog" aria-labelledby="catalog-title">
+    <div class="section-heading">
+      <div>
+        <span class="section-kicker">CATALOG</span>
+        <h2 id="catalog-title">All experiences</h2>
+      </div>
+      <span class="count-pill">{{ packages.length }} {{ packages.length === 1 ? 'experience' : 'experiences' }}</span>
+    </div>
+
+    @if (loading) {
+      <div class="package-grid" aria-label="Loading experiences">
+        @for (item of [1,2,3]; track item) {
+          <div class="skeleton-card"><div class="skeleton image"></div><div class="skeleton line large"></div><div class="skeleton line"></div><div class="skeleton line short"></div></div>
+        }
+      </div>
+    } @else if (packages.length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">✦</div>
+        <h3>No experiences yet</h3>
+        <p>Create your first River Edge experience to make it bookable.</p>
+        <button type="button" class="primary-button" (click)="openCreate()">Create experience</button>
+      </div>
+    } @else {
+      <div class="package-grid">
+        @for (package of packages; track package._id) {
+          <article class="package-card" [class.inactive]="!package.isActive">
+            <div class="card-image">
+              @if (getImage(package)) {
+                <img [src]="getImage(package)" [alt]="package.name" loading="lazy" />
+              } @else {
+                <div class="image-fallback" aria-hidden="true">🛶</div>
+              }
+              <span class="status-badge" [class.offline]="!package.isActive">{{ package.isActive ? 'LIVE' : 'INACTIVE' }}</span>
+              @if (package.discount?.enabled) { <span class="offer-badge">{{ getDiscountText(package) }}</span> }
+            </div>
+
+            <div class="card-body">
+              <div class="title-row">
+                <div>
+                  <h3>{{ package.name }}</h3>
+                  <span class="slug">/{{ package.slug }}</span>
+                </div>
+                <strong class="price">₹{{ package.price | number:'1.0-0' }}</strong>
+              </div>
+
+              @if (package.description) { <p class="description">{{ package.description }}</p> }
+
+              <div class="meta-row">
+                <span>{{ package.pricingType === 'PER_PERSON' ? 'Per person' : 'Per booking' }}</span>
+                @if (package.duration) { <span>◷ {{ package.duration }}</span> }
+              </div>
+
+              <div class="card-actions">
+                <button type="button" class="secondary-button" (click)="editPackage(package)">Edit</button>
+                @if (package.isActive) {
+                  <button type="button" class="danger-button" (click)="deactivatePackage(package)">Deactivate</button>
+                } @else {
+                  <button type="button" class="success-button" (click)="activatePackage(package)">Activate</button>
+                }
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
 </main>

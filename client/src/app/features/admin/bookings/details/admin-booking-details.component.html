@@ -1,363 +1,172 @@
 <app-admin-nav></app-admin-nav>
+
 <main class="details-page">
-
-    @if (loading) {
-
-    <div class="page-state">
-
-        <div class="spinner"></div>
-
-        <span>
-            Loading booking...
-        </span>
-
-    </div>
-
-    }
-
-    @else if (error && !booking) {
-
-    <div class="page-state error-state">
-
-        <strong>
-            {{ error }}
-        </strong>
-
-        <a routerLink="/admin" class="back-link">
-            ← Back to dashboard
-        </a>
-
-    </div>
-
-    }
-
-    @else if (booking) {
-
-    <!-- HEADER -->
-
+  @if (loading) {
+    <section class="page-state" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <strong>Loading booking</strong>
+      <span>Getting the latest booking details…</span>
+    </section>
+  } @else if (error && !booking) {
+    <section class="page-state error-state">
+      <div class="state-icon">!</div>
+      <strong>{{ error }}</strong>
+      <span>We couldn't retrieve this booking.</span>
+      <a routerLink="/admin/bookings" class="back-button">← Back to bookings</a>
+    </section>
+  } @else if (booking) {
     <header class="details-header">
-
-        <div>
-
-            <a routerLink="/admin" class="back-link">
-                ← Back to bookings
-            </a>
-
-            <span class="eyebrow">
-                BOOKING DETAILS
+      <div class="header-main">
+        <a routerLink="/admin/bookings" class="back-link">← Back to bookings</a>
+        <div class="eyebrow">BOOKING DETAILS</div>
+        <div class="title-row">
+          <h1>{{ booking.bookingId }}</h1>
+          <div class="header-status" aria-label="Booking and payment status">
+            <span class="status" [class.confirmed]="booking.bookingStatus === 'CONFIRMED'" [class.pending]="booking.bookingStatus === 'PENDING'" [class.cancelled]="booking.bookingStatus === 'CANCELLED'">
+              {{ booking.bookingStatus }}
             </span>
-
-            <h1>
-                {{ booking.bookingId }}
-            </h1>
-
-            <p>
-                Created
-                {{ formatCreatedDate(booking.createdAt) }}
-            </p>
-
+            <span class="status" [class.paid]="booking.paymentStatus === 'PAID'" [class.pending]="booking.paymentStatus === 'PENDING'" [class.failed]="booking.paymentStatus === 'FAILED'" [class.refunded]="booking.paymentStatus === 'REFUNDED'">
+              {{ booking.paymentStatus }}
+            </span>
+          </div>
         </div>
+        <p>Created {{ formatCreatedDate(booking.createdAt) }}</p>
+      </div>
 
-
-        <div class="header-status">
-
-            <span class="status booking" [class.confirmed]="
-            booking.bookingStatus === 'CONFIRMED'
-          " [class.pending]="
-            booking.bookingStatus === 'PENDING'
-          " [class.cancelled]="
-            booking.bookingStatus === 'CANCELLED'
-          ">
-                {{ booking.bookingStatus }}
-            </span>
-
-            <span class="status payment" [class.paid]="
-            booking.paymentStatus === 'PAID'
-          " [class.pending]="
-            booking.paymentStatus === 'PENDING'
-          " [class.failed]="
-            booking.paymentStatus === 'FAILED'
-          " [class.refunded]="
-            booking.paymentStatus === 'REFUNDED'
-          ">
-                {{ booking.paymentStatus }}
-            </span>
-
-        </div>
-
+      <a class="header-whatsapp" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">
+        <span class="whatsapp-icon">↗</span>
+        WhatsApp customer
+      </a>
     </header>
 
-
-    <!-- MESSAGES -->
-
     @if (successMessage) {
-
-    <div class="success-banner">
-        ✓ {{ successMessage }}
-    </div>
-
+      <div class="notice success" role="status"><span>✓</span>{{ successMessage }}</div>
     }
 
     @if (error) {
-
-    <div class="error-banner">
-        {{ error }}
-    </div>
-
+      <div class="notice error" role="alert"><span>!</span>{{ error }}</div>
     }
 
+    <section class="overview-strip" aria-label="Booking overview">
+      <div class="overview-item">
+        <span class="overview-label">EXPERIENCE</span>
+        <strong>{{ booking.packageName }}</strong>
+      </div>
+      <div class="overview-item">
+        <span class="overview-label">DATE</span>
+        <strong>{{ formatDate(booking.bookingDate) }}</strong>
+      </div>
+      <div class="overview-item">
+        <span class="overview-label">TIME</span>
+        <strong>{{ booking.timeSlot }}</strong>
+      </div>
+      <div class="overview-item total">
+        <span class="overview-label">TOTAL</span>
+        <strong>{{ formatCurrency(booking.totalAmount) }}</strong>
+      </div>
+    </section>
 
-    <!-- CONTENT -->
-
-    <section class="details-grid">
-
-        <!-- CUSTOMER -->
-
-        <article class="detail-card">
-
-            <span class="card-eyebrow">
-                CUSTOMER
-            </span>
-
-            <h2>
-                {{ booking.customerName }}
-            </h2>
-
-            <div class="info-row">
-
-                <span>
-                    Phone
-                </span>
-
-                <strong>
-                    {{ booking.customerPhone }}
-                </strong>
-
+    <section class="details-layout">
+      <div class="primary-column">
+        <article class="detail-card customer-card">
+          <div class="card-heading">
+            <div class="heading-icon">01</div>
+            <div>
+              <span class="card-eyebrow">CUSTOMER</span>
+              <h2>{{ booking.customerName }}</h2>
             </div>
-
-            <a class="whatsapp-button" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">
-                WhatsApp customer
-                <span>↗</span>
-            </a>
-
+          </div>
+          <div class="customer-contact">
+            <div>
+              <span>PHONE</span>
+              <strong>{{ booking.customerPhone }}</strong>
+            </div>
+            <a class="inline-whatsapp" [href]="whatsappUrl" target="_blank" rel="noopener noreferrer">Message on WhatsApp ↗</a>
+          </div>
         </article>
 
-
-        <!-- EXPERIENCE -->
-
         <article class="detail-card">
-
-            <span class="card-eyebrow">
-                EXPERIENCE
-            </span>
-
-            <h2>
-                {{ booking.packageName }}
-            </h2>
-
-            <div class="info-row">
-
-                <span>
-                    Participants
-                </span>
-
-                <strong>
-                    {{ booking.quantity }}
-                    {{
-                    booking.quantity === 1
-                    ? 'person'
-                    : 'people'
-                    }}
-                </strong>
-
+          <div class="card-heading">
+            <div class="heading-icon">02</div>
+            <div>
+              <span class="card-eyebrow">ADVENTURE</span>
+              <h2>{{ booking.packageName }}</h2>
             </div>
-
-            <div class="info-row">
-
-                <span>
-                    Pricing
-                </span>
-
-                <strong>
-                    {{
-                    booking.pricingType ===
-                    'PER_PERSON'
-                    ? 'Per person'
-                    : 'Per booking'
-                    }}
-                </strong>
-
-            </div>
-
+          </div>
+          <div class="data-grid">
+            <div class="data-item"><span>Participants</span><strong>{{ booking.quantity }} {{ booking.quantity === 1 ? 'person' : 'people' }}</strong></div>
+            <div class="data-item"><span>Pricing</span><strong>{{ booking.pricingType === 'PER_PERSON' ? 'Per person' : 'Per booking' }}</strong></div>
+            <div class="data-item"><span>Unit price</span><strong>{{ formatCurrency(booking.unitPrice) }}</strong></div>
+            <div class="data-item"><span>Booking date</span><strong>{{ formatDate(booking.bookingDate) }}</strong></div>
+          </div>
         </article>
 
-
-        <!-- DATE -->
-
         <article class="detail-card">
-
-            <span class="card-eyebrow">
-                ADVENTURE
-            </span>
-
-            <h2>
-                {{ formatDate(booking.bookingDate) }}
-            </h2>
-
-            <div class="info-row">
-
-                <span>
-                    Time
-                </span>
-
-                <strong>
-                    {{ booking.timeSlot }}
-                </strong>
-
+          <div class="card-heading">
+            <div class="heading-icon">03</div>
+            <div>
+              <span class="card-eyebrow">PAYMENT</span>
+              <h2>Payment summary</h2>
             </div>
-
-            <div class="info-row">
-
-                <span>
-                    Booking ID
-                </span>
-
-                <strong class="mono">
-                    {{ booking.bookingId }}
-                </strong>
-
-            </div>
-
-        </article>
-
-
-        <!-- PRICE -->
-
-        <article class="detail-card price-card">
-
-            <span class="card-eyebrow">
-                PAYMENT SUMMARY
-            </span>
-
-            <div class="price-row">
-
-                <span>
-                    Subtotal
-                </span>
-
-                <strong>
-                    {{ formatCurrency(booking.subtotal) }}
-                </strong>
-
-            </div>
-
-            <div class="price-row discount">
-
-                <span>
-                    Discount
-                </span>
-
-                <strong>
-                    -
-                    {{
-                    formatCurrency(
-                    booking.discountAmount
-                    )
-                    }}
-                </strong>
-
-            </div>
-
+          </div>
+          <div class="price-list">
+            <div><span>Subtotal</span><strong>{{ formatCurrency(booking.subtotal) }}</strong></div>
+            <div class="discount"><span>Discount</span><strong>-{{ formatCurrency(booking.discountAmount) }}</strong></div>
             <div class="price-divider"></div>
+            <div class="grand-total"><span>Total</span><strong>{{ formatCurrency(booking.totalAmount) }}</strong></div>
+          </div>
+          <div class="payment-state-row">
+            <span>Payment status</span>
+            <span class="mini-status" [class.paid]="booking.paymentStatus === 'PAID'" [class.pending]="booking.paymentStatus === 'PENDING'" [class.failed]="booking.paymentStatus === 'FAILED'" [class.refunded]="booking.paymentStatus === 'REFUNDED'">{{ booking.paymentStatus }}</span>
+          </div>
+        </article>
+      </div>
 
-            <div class="price-total">
-
-                <span>
-                    Total
-                </span>
-
-                <strong>
-                    {{
-                    formatCurrency(
-                    booking.totalAmount
-                    )
-                    }}
-                </strong>
-
-            </div>
-
-            <div class="payment-label">
-
-                Payment:
-                {{ booking.paymentStatus }}
-
-            </div>
-
+      <aside class="side-column">
+        <article class="detail-card schedule-card">
+          <span class="card-eyebrow">SCHEDULE</span>
+          <div class="date-display">
+            <span class="date-day">{{ booking.bookingDate | date:'dd' }}</span>
+            <span class="date-month">{{ booking.bookingDate | date:'MMM' }}</span>
+          </div>
+          <h2>{{ booking.timeSlot }}</h2>
+          <p>{{ formatDate(booking.bookingDate) }}</p>
+          <div class="schedule-divider"></div>
+          <div class="booking-ref"><span>REFERENCE</span><strong>{{ booking.bookingId }}</strong></div>
         </article>
 
+        <article class="detail-card actions-panel">
+          <span class="card-eyebrow">ACTIONS</span>
+          <h2>Manage booking</h2>
+          <p>Use these actions after checking the payment and customer details.</p>
+
+          @if (booking.bookingStatus !== 'CANCELLED') {
+            <button type="button" class="danger-action" (click)="cancelBooking()" [disabled]="submitting">
+              {{ submitting ? 'Updating…' : 'Cancel booking' }}
+            </button>
+          }
+
+          <div class="test-actions">
+            <span class="test-label">DEVELOPMENT TESTS</span>
+            @if (booking.paymentStatus !== 'PAID') {
+              <button type="button" class="test-action" [disabled]="submitting" (click)="simulateFailedPayment()">
+                Simulate failed payment
+              </button>
+              <button type="button" class="test-action success-test" [disabled]="submitting" (click)="simulateSuccessfulPayment()">
+                Simulate successful payment
+              </button>
+            } @else {
+              <span class="test-note">Payment is already marked as paid.</span>
+            }
+          </div>
+        </article>
+
+        <article class="detail-card created-card">
+          <span class="card-eyebrow">BOOKING RECORD</span>
+          <div><span>Created</span><strong>{{ formatCreatedDate(booking.createdAt) }}</strong></div>
+          <div><span>Last updated</span><strong>{{ formatCreatedDate(booking.updatedAt) }}</strong></div>
+        </article>
+      </aside>
     </section>
-
-
-    <!-- ACTIONS -->
-
-    <section class="actions-card">
-
-        <div>
-
-            <span class="card-eyebrow">
-                BOOKING ACTIONS
-            </span>
-
-            <h2>
-                Manage this booking
-            </h2>
-
-            <p>
-                Update the booking status after
-                reviewing the payment and customer details.
-            </p>
-
-        </div>
-
-
-        <div class="actions">
-
-
-            @if (
-            booking.bookingStatus !== 'CANCELLED'
-            ) {
-
-            <button type="button" class="cancel-button" (click)="cancelBooking()" [disabled]="submitting">
-                Cancel booking
-            </button>
-
-            }
-            @if (booking && booking.paymentStatus !== 'PAID') {
-            <button type="button" class="test-payment-button" [disabled]="submitting" (click)="simulateFailedPayment()">
-                @if (submitting) {
-                Simulating...
-                } @else {
-                Simulate Failed Payment
-                }
-            </button>
-            }
-            @if (booking && booking.paymentStatus !== 'PAID') {
-            
-            <button type="button" class="test-payment-button success-test-button" [disabled]="submitting"
-                (click)="simulateSuccessfulPayment()">
-                @if (submitting) {
-                Simulating...
-                } @else {
-                Simulate Successful Payment
-                }
-            </button>
-            
-            }
-
-        </div>
-
-    </section>
-
-    }
-
+  }
 </main>
